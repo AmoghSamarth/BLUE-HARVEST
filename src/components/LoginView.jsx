@@ -59,31 +59,57 @@ export default function LoginView({
 
   return (
     <div className="login-screen-wrapper">
-      {/* Background SVG Organic Waves */}
-      <svg 
-        className="screen-waves" 
-        viewBox="0 0 420 340" 
-        preserveAspectRatio="none" 
-        aria-hidden="true"
-      >
-        <path 
-          d="M0 80C100 55 170 120 270 115S380 95 420 85V340H0Z" 
-          fill="#BED7FF" 
-          opacity="0.95"
-        />
-        <path 
-          d="M0 125C95 135 175 185 260 185S380 170 420 165V340H0Z" 
-          fill="#7AA6FF" 
-        />
-        <path 
-          d="M0 180C70 195 160 220 250 240S370 275 420 280V340H0Z" 
-          fill="#2564F4" 
-        />
-        <path 
-          d="M0 260C80 275 190 288 280 295S380 306 420 308V340H0Z" 
-          fill="#0C286D" 
-        />
-      </svg>
+      {/* Background Animated Tidal Waves */}
+      <div className="waves-tide-container" aria-hidden="true">
+        {/* Layer 1: Top Light Powder Blue Wave */}
+        <svg 
+          className="tide-wave-layer wave-layer-1" 
+          viewBox="0 0 1200 340" 
+          preserveAspectRatio="none"
+        >
+          <path 
+            d="M0,75 C250,45 520,115 800,90 C1000,72 1120,60 1200,55 L1200,340 L0,340 Z" 
+            fill="#BED7FF" 
+            opacity="0.95"
+          />
+        </svg>
+
+        {/* Layer 2: Medium Soft Blue Wave */}
+        <svg 
+          className="tide-wave-layer wave-layer-2" 
+          viewBox="0 0 1200 340" 
+          preserveAspectRatio="none"
+        >
+          <path 
+            d="M0,120 C220,135 480,180 740,175 C950,170 1100,150 1200,145 L1200,340 L0,340 Z" 
+            fill="#7AA6FF" 
+          />
+        </svg>
+
+        {/* Layer 3: Vivid Royal Blue Wave */}
+        <svg 
+          className="tide-wave-layer wave-layer-3" 
+          viewBox="0 0 1200 340" 
+          preserveAspectRatio="none"
+        >
+          <path 
+            d="M0,175 C200,190 460,225 720,235 C940,245 1100,260 1200,265 L1200,340 L0,340 Z" 
+            fill="#2564F4" 
+          />
+        </svg>
+
+        {/* Layer 4: Deep Navy Foundation Wave */}
+        <svg 
+          className="tide-wave-layer wave-layer-4" 
+          viewBox="0 0 1200 340" 
+          preserveAspectRatio="none"
+        >
+          <path 
+            d="M0,250 C260,265 540,278 800,285 C1000,290 1120,296 1200,300 L1200,340 L0,340 Z" 
+            fill="#0C286D" 
+          />
+        </svg>
+      </div>
 
       <div className="login-content-container">
         {/* Blue Harvest Logo Badge */}

@@ -62,8 +62,8 @@
   overflow-x: hidden;
 }
 
-/* Background Multi-layer Organic Waves (100% Full Width Across Any Screen) */
-.screen-waves {
+/* Background Animated Tidal Waves (100% Full Width Across Any Screen) */
+.waves-tide-container {
   position: absolute;
   left: 0;
   right: 0;
@@ -72,6 +72,86 @@
   height: clamp(280px, 34vh, 380px);
   pointer-events: none;
   z-index: 1;
+  overflow: hidden;
+}
+
+.tide-wave-layer {
+  position: absolute;
+  left: -8%;
+  bottom: 0;
+  width: 116%;
+  height: 100%;
+  pointer-events: none;
+  will-change: transform;
+  transform-origin: 50% 100%;
+}
+
+/* Layer 1: Top Light Powder Blue Wave (Surface ripple & tide crest) */
+.wave-layer-1 {
+  animation: tideFlow1 7s ease-in-out infinite alternate;
+}
+
+/* Layer 2: Medium Soft Blue Wave (Mid-depth tidal swell) */
+.wave-layer-2 {
+  animation: tideFlow2 9.5s ease-in-out infinite alternate-reverse;
+}
+
+/* Layer 3: Vivid Royal Blue Wave (Deep rhythmic current) */
+.wave-layer-3 {
+  animation: tideFlow3 13s ease-in-out infinite alternate;
+}
+
+/* Layer 4: Deep Navy Foundation Wave (Slow oceanic ebb & grounding) */
+.wave-layer-4 {
+  animation: tideFlow4 18s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes tideFlow1 {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+  50% {
+    transform: translate3d(3%, -16px, 0) scaleY(1.06);
+  }
+  100% {
+    transform: translate3d(-2.5%, -6px, 0) scaleY(0.97);
+  }
+}
+
+@keyframes tideFlow2 {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+  50% {
+    transform: translate3d(-3.5%, -20px, 0) scaleY(1.08);
+  }
+  100% {
+    transform: translate3d(2%, -8px, 0) scaleY(0.96);
+  }
+}
+
+@keyframes tideFlow3 {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+  50% {
+    transform: translate3d(2%, -12px, 0) scaleY(1.05);
+  }
+  100% {
+    transform: translate3d(-2%, -4px, 0) scaleY(0.98);
+  }
+}
+
+@keyframes tideFlow4 {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+  50% {
+    transform: translate3d(-1.5%, -7px, 0) scaleY(1.03);
+  }
+  100% {
+    transform: translate3d(1.5%, -2px, 0) scaleY(0.99);
+  }
 }
 
 /* Centered Form Content Container (Ergonomic readable width) */
