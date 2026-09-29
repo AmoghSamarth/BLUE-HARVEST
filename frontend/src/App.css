@@ -1547,7 +1547,7 @@ body::-webkit-scrollbar,
 .history-hero-section {
   position: relative;
   width: 100%;
-  padding: 12px 18px 20px;
+  padding: 12px 18px 14px;
   background: #FFFFFF;
   overflow: visible;
   z-index: 10;
@@ -1610,16 +1610,17 @@ body::-webkit-scrollbar,
   font-size: 14px;
   color: #64748B;
   font-weight: 500;
-  margin: 0 0 18px 0;
+  margin: 0;
 }
 
-/* Search and Filters Controls Row */
+/* Search and Filters Controls Row (Moved down into open hero space above Today) */
 .history-controls-row {
   display: flex;
   align-items: center;
   gap: 10px;
   position: relative;
   z-index: 5;
+  margin-top: 42px;
 }
 
 .history-search-box {
@@ -1811,6 +1812,10 @@ body::-webkit-scrollbar,
   color: #0C182A;
   margin: 18px 0 12px 2px;
   letter-spacing: -0.01em;
+}
+
+.history-group-block:first-child .history-group-header {
+  margin-top: 6px;
 }
 
 .history-cards-list {
