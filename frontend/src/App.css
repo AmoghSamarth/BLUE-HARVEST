@@ -962,7 +962,7 @@ body::-webkit-scrollbar,
 }
 
 .hero-content-wrapper {
-  position: relative;
+  position: static;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1004,6 +1004,7 @@ body::-webkit-scrollbar,
   position: absolute;
   top: 0;
   right: 0;
+  margin: 0;
   width: 58%;
   max-width: 290px;
   height: 100%;
