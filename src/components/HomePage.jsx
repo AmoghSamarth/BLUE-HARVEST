@@ -171,7 +171,7 @@ export default function HomePage({ user, onLogout }) {
               </div>
             </section>
 
-            {/* Primary Action Cards Grid (Upload Image & Use Camera) */}
+            {/* Primary Action Cards Grid (Responsive 2-col on mobile, 3-col on tablet/desktop) */}
             <section className="action-cards-grid">
               {/* Upload Image Card */}
               <div 
@@ -210,10 +210,8 @@ export default function HomePage({ user, onLogout }) {
                   <p className="card-subtitle">Take a photo now</p>
                 </div>
               </div>
-            </section>
 
-            {/* Video Counting Card (Full Width) */}
-            <section className="secondary-action-section">
+              {/* Video Counting Card */}
               <div className="action-card video-card">
                 <div className="video-card-left">
                   <div className="card-icon-badge amber-badge">
