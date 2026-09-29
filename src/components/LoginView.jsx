@@ -57,6 +57,16 @@ export default function LoginView({
     }, 600);
   };
 
+  const [isDemoFilled, setIsDemoFilled] = useState(false);
+
+  const handleFillDemo = () => {
+    setUsername('samarth_aquafarm');
+    setPassword('SpawnCounter2026!');
+    setErrors({ username: '', password: '' });
+    setIsDemoFilled(true);
+    setTimeout(() => setIsDemoFilled(false), 2500);
+  };
+
   return (
     <div className="login-screen-wrapper">
       {/* Background Animated Tidal Waves */}
@@ -112,6 +122,18 @@ export default function LoginView({
       </div>
 
       <div className="login-content-container">
+        {/* Temporary Demo Credentials Tab in Top Right */}
+        <button
+          type="button"
+          className={`demo-credentials-tab ${isDemoFilled ? 'filled' : ''}`}
+          onClick={handleFillDemo}
+          title="Auto-fill Demo Credentials (samarth_aquafarm / SpawnCounter2026!)"
+          aria-label="Auto-fill demo credentials"
+        >
+          <span className="demo-tab-icon">{isDemoFilled ? '✓' : '⚡'}</span>
+          <span className="demo-tab-text">{isDemoFilled ? 'Filled!' : 'Demo'}</span>
+        </button>
+
         {/* Blue Harvest Logo Badge */}
         <div className="app-logo-badge" aria-label="Blue Harvest Logo">
           <svg 
