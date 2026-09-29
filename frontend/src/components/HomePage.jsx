@@ -574,45 +574,48 @@ export default function HomePage({
               <div className="history-hero-content">
                 <h1 className="history-hero-heading">Counting History</h1>
                 <p className="history-hero-subtext">View all your past fish counts</p>
+              </div>
+            </section>
 
-                {/* Search & Filter Controls */}
-                <div className="history-controls-row">
-                  <div className="history-search-box">
-                    <Search size={17} className="history-search-icon" />
-                    <input 
-                      type="text" 
-                      value={historySearchQuery}
-                      onChange={(e) => setHistorySearchQuery(e.target.value)}
-                      placeholder="Search by pond name, date or ID..." 
-                      className="history-search-input"
-                      aria-label="Search past fish counts"
-                    />
-                    {historySearchQuery && (
-                      <button 
-                        type="button" 
-                        className="history-search-clear"
-                        onClick={() => setHistorySearchQuery('')}
-                        aria-label="Clear search query"
-                      >
-                        <X size={13} />
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="history-filter-wrapper" onClick={(e) => e.stopPropagation()}>
+            {/* Dedicated Search & Filter Controls (Below hero image with zero overlap, 15% smaller) */}
+            <div className="history-search-filter-section">
+              <div className="history-controls-row">
+                <div className="history-search-box">
+                  <Search size={15} className="history-search-icon" />
+                  <input 
+                    type="text" 
+                    value={historySearchQuery}
+                    onChange={(e) => setHistorySearchQuery(e.target.value)}
+                    placeholder="Search by pond name, date or ID..." 
+                    className="history-search-input"
+                    aria-label="Search past fish counts"
+                  />
+                  {historySearchQuery && (
                     <button 
                       type="button" 
-                      className={`history-filter-btn ${activeFilter !== 'All' ? 'active' : ''}`}
-                      onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                      aria-label="Filter counting batches"
+                      className="history-search-clear"
+                      onClick={() => setHistorySearchQuery('')}
+                      aria-label="Clear search query"
                     >
-                      <Filter size={16} strokeWidth={2.3} />
-                      <span>{activeFilter === 'All' ? 'Filters' : activeFilter}</span>
-                      <ChevronDown size={15} className={`filter-chevron ${showFilterDropdown ? 'rotated' : ''}`} />
+                      <X size={11} />
                     </button>
+                  )}
+                </div>
 
-                    {showFilterDropdown && (
-                      <div className="history-filter-dropdown">
+                <div className="history-filter-wrapper" onClick={(e) => e.stopPropagation()}>
+                  <button 
+                    type="button" 
+                    className={`history-filter-btn ${activeFilter !== 'All' ? 'active' : ''}`}
+                    onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                    aria-label="Filter counting batches"
+                  >
+                    <Filter size={14} strokeWidth={2.3} />
+                    <span>{activeFilter === 'All' ? 'Filters' : activeFilter}</span>
+                    <ChevronDown size={13} className={`filter-chevron ${showFilterDropdown ? 'rotated' : ''}`} />
+                  </button>
+
+                  {showFilterDropdown && (
+                    <div className="history-filter-dropdown">
                         <div className="filter-dropdown-header">Filter by Type</div>
                         <button 
                           type="button" 
@@ -695,7 +698,6 @@ export default function HomePage({
                   </div>
                 </div>
               </div>
-            </section>
 
             {/* History Feed List with Time Groups */}
             <section className="history-feed-section">
