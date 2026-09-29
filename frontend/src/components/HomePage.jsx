@@ -17,11 +17,42 @@ import {
   RefreshCw,
   LogOut,
   Sliders,
-  Check
+  Check,
+  Search,
+  Filter,
+  ChevronDown,
+  MoreVertical,
+  Ruler,
+  Layers,
+  Box,
+  Maximize2,
+  Download,
+  Trash2,
+  Eye,
+  SlidersHorizontal
 } from 'lucide-react';
 import heroImage from '../assets/hero.png';
 import agriImage from '../assets/agriculture.png';
+import trayImage from '../assets/tray.png';
 import { processImage } from '../api/client';
+
+// Authentic blue circular basin / tank tub icon matching historySectionReference.png
+const BasinIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+    <ellipse cx="12" cy="7.5" rx="8.5" ry="3.5" fill="#3B82F6" />
+    <path d="M3.5 7.5v7.2c0 2.2 3.8 3.8 8.5 3.8s8.5-1.6 8.5-3.8V7.5" fill="#2563EB" />
+    <ellipse cx="12" cy="7.5" rx="6.8" ry="2.2" fill="#93C5FD" />
+  </svg>
+);
+
+// Authentic density bars badge icon matching historySectionReference.png
+const DensityBarsIcon = ({ size = 13 }) => (
+  <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={{ flexShrink: 0 }}>
+    <rect x="2" y="9.5" width="2.4" height="4.5" rx="0.8" />
+    <rect x="6.8" y="6" width="2.4" height="8" rx="0.8" />
+    <rect x="11.6" y="2.5" width="2.4" height="11.5" rx="0.8" />
+  </svg>
+);
 
 export default function HomePage({ 
   user, 
@@ -67,12 +98,90 @@ export default function HomePage({
     { id: 3, title: 'AI Model Updated', desc: 'YOLOv8-Fry v3.4 optimized for fingerlings', time: '1d ago' },
   ];
 
-  // History list state
+  // History list state matching reference dataset
   const [historyItems, setHistoryItems] = useState([
-    { id: 'BAT-4028', date: 'Today, 4:15 PM', count: 487, density: '44 fry/cm²', pond: 'Pond Delta #4' },
-    { id: 'BAT-4027', date: 'Today, 11:30 AM', count: 712, density: '68 fry/cm²', pond: 'Nursery Tray #2' },
-    { id: 'BAT-4026', date: 'Yesterday, 5:20 PM', count: 320, density: '29 fry/cm²', pond: 'Fingerling Tank A' },
+    { 
+      id: 'BAT-4028', 
+      group: 'Today',
+      time: 'Today, 4:15 PM', 
+      count: 487, 
+      density: '44 fry/cm²', 
+      pond: 'Pond Delta #4',
+      source: 'Camera',
+      container: 'Image',
+      dimensions: '1.2 m × 0.8 m',
+      image: heroImage,
+      confidence: '99.4%',
+      avgLength: '4.6 mm',
+      status: 'Verified',
+      method: 'Camera Stream - YOLOv8 Live',
+    },
+    { 
+      id: 'BAT-4027', 
+      group: 'Today',
+      time: 'Today, 11:30 AM', 
+      count: 712, 
+      density: '68 fry/cm²', 
+      pond: 'Nursery Tray #2',
+      source: 'Uploaded',
+      container: 'Tray',
+      dimensions: '1.0 m × 0.6 m',
+      image: trayImage,
+      confidence: '99.2%',
+      avgLength: '3.8 mm',
+      status: 'Verified',
+      method: 'High-Res Tray Segmentation',
+    },
+    { 
+      id: 'BAT-4026', 
+      group: 'Yesterday',
+      time: 'Yesterday, 5:20 PM', 
+      count: 320, 
+      density: '29 fry/cm²', 
+      pond: 'Fingerling Tank A',
+      source: 'Camera',
+      container: 'Tank',
+      dimensions: '1.5 m × 1.0 m',
+      image: heroImage,
+      confidence: '99.5%',
+      avgLength: '5.1 mm',
+      status: 'Verified',
+      method: 'Circular Basin Filter',
+    },
+    { 
+      id: 'BAT-4025', 
+      group: 'This Week',
+      time: 'Sep 25, 10:12 AM', 
+      count: 1024, 
+      density: '52 fry/cm²', 
+      pond: 'Main Pond #1',
+      source: 'Uploaded',
+      container: 'Pond',
+      dimensions: '2.0 m × 1.5 m',
+      image: trayImage,
+      confidence: '98.8%',
+      avgLength: '4.4 mm',
+      status: 'Verified',
+      method: 'Macro Pond Net Inspection',
+    },
   ]);
+
+  // History search, filtering, and modal interaction state
+  const [historySearchQuery, setHistorySearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [activeActionMenuId, setActiveActionMenuId] = useState(null);
+  const [selectedBatchModal, setSelectedBatchModal] = useState(null);
+
+  // Close dropdowns on outside interaction
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      setShowFilterDropdown(false);
+      setActiveActionMenuId(null);
+    };
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, []);
 
   const handleImageSelected = async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -117,13 +226,24 @@ export default function HomePage({
   const handleSaveToLedger = () => {
     if (scanResult) {
       const newBatchId = `BAT-${Math.floor(Math.random() * 900 + 4100)}`;
+      const now = new Date();
+      const timeStr = `Today, ${now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
       setHistoryItems(prev => [
         {
           id: newBatchId,
-          date: 'Just now',
+          group: 'Today',
+          time: timeStr,
           count: scanResult.count,
           density: scanResult.density,
           pond: user?.pondLocation || 'Pond Delta #4',
+          source: 'Uploaded',
+          container: 'Tray',
+          dimensions: '1.2 m × 0.8 m',
+          image: scanningImage || heroImage,
+          confidence: scanResult.confidence || '99.4%',
+          avgLength: scanResult.avgLength || '4.5 mm',
+          status: 'Verified',
+          method: scanResult.channel || 'Adaptive High-Contrast Channel',
         },
         ...prev,
       ]);
@@ -131,8 +251,67 @@ export default function HomePage({
     }
   };
 
+  const handleExportCSV = (batch, e) => {
+    e?.stopPropagation();
+    const csvContent = "data:text/csv;charset=utf-8," + 
+      "Batch ID,Date & Time,Fingerling Count,Pond Location,Density,Source,Container,Dimensions,Confidence\n" +
+      `"${batch.id}","${batch.time}","${batch.count}","${batch.pond}","${batch.density}","${batch.source}","${batch.container}","${batch.dimensions}","${batch.confidence || '99.4%'}"\n`;
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `${batch.id}-ledger.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setActiveActionMenuId(null);
+  };
+
+  const handleDeleteBatch = (id, e) => {
+    e?.stopPropagation();
+    setHistoryItems((prev) => prev.filter((item) => item.id !== id));
+    setActiveActionMenuId(null);
+  };
+
+  // Filter & Search processing
+  const filteredHistoryItems = historyItems.filter((item) => {
+    const q = historySearchQuery.trim().toLowerCase();
+    const matchesSearch = !q || (
+      item.id.toLowerCase().includes(q) ||
+      item.pond.toLowerCase().includes(q) ||
+      item.time.toLowerCase().includes(q) ||
+      item.group.toLowerCase().includes(q) ||
+      item.density.toLowerCase().includes(q) ||
+      item.container.toLowerCase().includes(q) ||
+      item.source.toLowerCase().includes(q)
+    );
+
+    let matchesFilter = true;
+    if (activeFilter !== 'All') {
+      if (activeFilter === 'Tray' || activeFilter === 'Tank' || activeFilter === 'Pond') {
+        matchesFilter = item.container.toLowerCase() === activeFilter.toLowerCase();
+      } else if (activeFilter === 'Camera' || activeFilter === 'Uploaded') {
+        matchesFilter = item.source.toLowerCase() === activeFilter.toLowerCase();
+      }
+    }
+
+    return matchesSearch && matchesFilter;
+  });
+
+  // Group items by time period
+  const groupedHistory = filteredHistoryItems.reduce((acc, item) => {
+    const groupName = item.group || 'Today';
+    if (!acc[groupName]) {
+      acc[groupName] = [];
+    }
+    acc[groupName].push(item);
+    return acc;
+  }, {});
+
+  const groupOrder = ['Today', 'Yesterday', 'This Week', 'Earlier'];
+  const activeGroups = groupOrder.filter((group) => groupedHistory[group]?.length > 0);
+
   return (
-    <div className="home-screen-wrapper">
+    <div className={`home-screen-wrapper tab-${activeTab}`}>
       {/* Hidden File / Camera Inputs */}
       <input 
         type="file" 
@@ -378,31 +557,289 @@ export default function HomePage({
           </>
         )}
 
-        {/* History Tab View */}
+        {/* History Tab View matching historySectionReference.png */}
         {activeTab === 'history' && (
-          <section className="history-tab-content">
-            <h2 className="section-title">Counting History</h2>
-            <div className="history-cards-list">
-              {historyItems.map((item) => (
-                <div key={item.id} className="history-card">
-                  <div className="history-card-header">
-                    <span className="history-id">{item.id}</span>
-                    <span className="history-date">{item.date}</span>
+          <div className="history-tab-view-container">
+            {/* History Top Hero with agriculture.png Artwork */}
+            <section className="history-hero-section">
+              <div className="history-hero-art-wrapper" aria-hidden="true">
+                <img 
+                  src={agriImage} 
+                  alt="Sustainable Aquaculture Landscape" 
+                  className="history-hero-art-img" 
+                />
+                <div className="history-hero-overlay" />
+              </div>
+
+              <div className="history-hero-content">
+                <h1 className="history-hero-heading">Counting History</h1>
+                <p className="history-hero-subtext">View all your past fish counts</p>
+
+                {/* Search & Filter Controls */}
+                <div className="history-controls-row">
+                  <div className="history-search-box">
+                    <Search size={17} className="history-search-icon" />
+                    <input 
+                      type="text" 
+                      value={historySearchQuery}
+                      onChange={(e) => setHistorySearchQuery(e.target.value)}
+                      placeholder="Search by pond name, date or ID..." 
+                      className="history-search-input"
+                      aria-label="Search past fish counts"
+                    />
+                    {historySearchQuery && (
+                      <button 
+                        type="button" 
+                        className="history-search-clear"
+                        onClick={() => setHistorySearchQuery('')}
+                        aria-label="Clear search query"
+                      >
+                        <X size={13} />
+                      </button>
+                    )}
                   </div>
-                  <div className="history-card-body">
-                    <div className="history-count-badge">
-                      <span className="count-num">{item.count}</span>
-                      <span className="count-label">Fingerlings</span>
-                    </div>
-                    <div className="history-details">
-                      <div className="detail-item"><strong>Pond:</strong> {item.pond}</div>
-                      <div className="detail-item"><strong>Density:</strong> {item.density}</div>
-                    </div>
+
+                  <div className="history-filter-wrapper" onClick={(e) => e.stopPropagation()}>
+                    <button 
+                      type="button" 
+                      className={`history-filter-btn ${activeFilter !== 'All' ? 'active' : ''}`}
+                      onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                      aria-label="Filter counting batches"
+                    >
+                      <Filter size={16} strokeWidth={2.3} />
+                      <span>{activeFilter === 'All' ? 'Filters' : activeFilter}</span>
+                      <ChevronDown size={15} className={`filter-chevron ${showFilterDropdown ? 'rotated' : ''}`} />
+                    </button>
+
+                    {showFilterDropdown && (
+                      <div className="history-filter-dropdown">
+                        <div className="filter-dropdown-header">Filter by Type</div>
+                        <button 
+                          type="button" 
+                          className={`filter-option-btn ${activeFilter === 'All' ? 'selected' : ''}`}
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setActiveFilter('All'); 
+                            setShowFilterDropdown(false); 
+                          }}
+                        >
+                          <span>All Records</span>
+                          {activeFilter === 'All' && <Check size={14} className="filter-opt-check" />}
+                        </button>
+                        <div className="filter-dropdown-divider" />
+                        <div className="filter-dropdown-section-lbl">Containers</div>
+                        <button 
+                          type="button" 
+                          className={`filter-option-btn ${activeFilter === 'Tray' ? 'selected' : ''}`}
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setActiveFilter('Tray'); 
+                            setShowFilterDropdown(false); 
+                          }}
+                        >
+                          <div className="option-with-icon"><Layers size={14} /><span>Nursery Tray</span></div>
+                          {activeFilter === 'Tray' && <Check size={14} className="filter-opt-check" />}
+                        </button>
+                        <button 
+                          type="button" 
+                          className={`filter-option-btn ${activeFilter === 'Tank' ? 'selected' : ''}`}
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setActiveFilter('Tank'); 
+                            setShowFilterDropdown(false); 
+                          }}
+                        >
+                          <div className="option-with-icon"><Box size={14} /><span>Fingerling Tank</span></div>
+                          {activeFilter === 'Tank' && <Check size={14} className="filter-opt-check" />}
+                        </button>
+                        <button 
+                          type="button" 
+                          className={`filter-option-btn ${activeFilter === 'Pond' ? 'selected' : ''}`}
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setActiveFilter('Pond'); 
+                            setShowFilterDropdown(false); 
+                          }}
+                        >
+                          <div className="option-with-icon"><BasinIcon size={14} /><span>Main Pond</span></div>
+                          {activeFilter === 'Pond' && <Check size={14} className="filter-opt-check" />}
+                        </button>
+                        <div className="filter-dropdown-divider" />
+                        <div className="filter-dropdown-section-lbl">Source</div>
+                        <button 
+                          type="button" 
+                          className={`filter-option-btn ${activeFilter === 'Camera' ? 'selected' : ''}`}
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setActiveFilter('Camera'); 
+                            setShowFilterDropdown(false); 
+                          }}
+                        >
+                          <div className="option-with-icon"><Camera size={14} /><span>Camera</span></div>
+                          {activeFilter === 'Camera' && <Check size={14} className="filter-opt-check" />}
+                        </button>
+                        <button 
+                          type="button" 
+                          className={`filter-option-btn ${activeFilter === 'Uploaded' ? 'selected' : ''}`}
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setActiveFilter('Uploaded'); 
+                            setShowFilterDropdown(false); 
+                          }}
+                        >
+                          <div className="option-with-icon"><ImageIcon size={14} /><span>Uploaded</span></div>
+                          {activeFilter === 'Uploaded' && <Check size={14} className="filter-opt-check" />}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
+              </div>
+            </section>
+
+            {/* History Feed List with Time Groups */}
+            <section className="history-feed-section">
+              {activeGroups.length > 0 ? (
+                activeGroups.map((groupName) => (
+                  <div key={groupName} className="history-group-block">
+                    <h2 className="history-group-header">{groupName}</h2>
+                    <div className="history-cards-list">
+                      {groupedHistory[groupName].map((item) => (
+                        <div 
+                          key={item.id} 
+                          className="history-card-item"
+                          onClick={() => setSelectedBatchModal(item)}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          {/* Left Square Thumbnail */}
+                          <div className="history-thumb-box">
+                            <img 
+                              src={item.image || heroImage} 
+                              alt={`Fish count ${item.id}`} 
+                              className="history-thumb-img" 
+                            />
+                          </div>
+
+                          {/* Right Details Column */}
+                          <div className="history-card-right">
+                            {/* Card Top Row: ID, Time, More Options */}
+                            <div className="history-card-top-row">
+                              <span className="history-batch-code">{item.id}</span>
+                              <div className="history-card-time-group">
+                                <span className="history-timestamp">{item.time}</span>
+                                <div className="history-more-wrapper" onClick={(e) => e.stopPropagation()}>
+                                  <button 
+                                    type="button" 
+                                    className="history-more-btn"
+                                    onClick={() => setActiveActionMenuId(activeActionMenuId === item.id ? null : item.id)}
+                                    aria-label="More options"
+                                  >
+                                    <MoreVertical size={16} />
+                                  </button>
+
+                                  {activeActionMenuId === item.id && (
+                                    <div className="history-card-menu-dropdown">
+                                      <button 
+                                        type="button" 
+                                        className="card-menu-action-btn"
+                                        onClick={() => {
+                                          setSelectedBatchModal(item);
+                                          setActiveActionMenuId(null);
+                                        }}
+                                      >
+                                        <Eye size={14} />
+                                        <span>View Details</span>
+                                      </button>
+                                      <button 
+                                        type="button" 
+                                        className="card-menu-action-btn"
+                                        onClick={(e) => handleExportCSV(item, e)}
+                                      >
+                                        <Download size={14} />
+                                        <span>Download CSV</span>
+                                      </button>
+                                      <button 
+                                        type="button" 
+                                        className="card-menu-action-btn delete-btn"
+                                        onClick={(e) => handleDeleteBatch(item.id, e)}
+                                      >
+                                        <Trash2 size={14} />
+                                        <span>Delete Record</span>
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Card Middle Row: Count Box + Pond & Density Column */}
+                            <div className="history-card-mid-row">
+                              <div className="history-count-badge-box">
+                                <span className="history-count-num">
+                                  {Number(item.count).toLocaleString()}
+                                </span>
+                                <span className="history-count-lbl">Fingerlings</span>
+                              </div>
+
+                              <div className="history-pond-density-col">
+                                <div className="history-pond-chip-row">
+                                  <BasinIcon size={17} />
+                                  <span className="history-pond-title">{item.pond}</span>
+                                </div>
+                                <div className="history-density-chip">
+                                  <DensityBarsIcon size={13} />
+                                  <span>Density: {item.density}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Bottom Tags Row */}
+                            <div className="history-tags-row">
+                              <div className="history-tag-pill">
+                                {item.source === 'Camera' ? <Camera size={12} /> : <ImageIcon size={12} />}
+                                <span>{item.source}</span>
+                              </div>
+                              <div className="history-tag-pill">
+                                {item.container === 'Tray' ? <Layers size={12} /> : item.container === 'Tank' ? <Box size={12} /> : <ImageIcon size={12} />}
+                                <span>{item.container}</span>
+                              </div>
+                              <div className="history-tag-pill">
+                                <Ruler size={12} />
+                                <span>{item.dimensions}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="history-empty-state">
+                  <div className="empty-state-icon-box">
+                    <Search size={32} />
+                  </div>
+                  <h3 className="empty-state-title">No matching counts found</h3>
+                  <p className="empty-state-desc">
+                    {historySearchQuery 
+                      ? `We couldn't find any batches matching "${historySearchQuery}".`
+                      : `No batches found for filter "${activeFilter}".`}
+                  </p>
+                  <button 
+                    type="button" 
+                    className="empty-reset-btn"
+                    onClick={() => {
+                      setHistorySearchQuery('');
+                      setActiveFilter('All');
+                    }}
+                  >
+                    Reset Search & Filters
+                  </button>
+                </div>
+              )}
+            </section>
+          </div>
         )}
 
         {/* Reports Tab View */}
@@ -576,6 +1013,94 @@ export default function HomePage({
               <LogOut size={16} />
               <span>Log Out</span>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Batch Detail Modal */}
+      {selectedBatchModal && (
+        <div className="modal-backdrop" onClick={() => setSelectedBatchModal(null)}>
+          <div className="modal-card batch-detail-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="drawer-header">
+              <div className="modal-header-info">
+                <span className="batch-modal-id">{selectedBatchModal.id}</span>
+                <span className="batch-modal-status-badge">
+                  <CheckCircle2 size={13} /> {selectedBatchModal.status || 'Verified'}
+                </span>
+              </div>
+              <button 
+                type="button" 
+                className="drawer-close-btn" 
+                onClick={() => setSelectedBatchModal(null)}
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="batch-modal-image-wrapper">
+              <img 
+                src={selectedBatchModal.image || heroImage} 
+                alt={selectedBatchModal.id} 
+                className="batch-modal-img" 
+              />
+            </div>
+
+            <div className="batch-modal-count-row">
+              <div className="batch-modal-count-stat">
+                <span className="modal-count-num">{Number(selectedBatchModal.count).toLocaleString()}</span>
+                <span className="modal-count-sub">Total Fingerlings</span>
+              </div>
+              <div className="batch-modal-density-stat">
+                <span className="modal-density-val">{selectedBatchModal.density}</span>
+                <span className="modal-density-sub">Packing Density</span>
+              </div>
+            </div>
+
+            <div className="batch-modal-meta-grid">
+              <div className="modal-meta-row">
+                <span className="meta-lbl">Pond / Tank</span>
+                <span className="meta-val">{selectedBatchModal.pond}</span>
+              </div>
+              <div className="modal-meta-row">
+                <span className="meta-lbl">Captured</span>
+                <span className="meta-val">{selectedBatchModal.time}</span>
+              </div>
+              <div className="modal-meta-row">
+                <span className="meta-lbl">Dimensions</span>
+                <span className="meta-val">{selectedBatchModal.dimensions}</span>
+              </div>
+              <div className="modal-meta-row">
+                <span className="meta-lbl">Source Type</span>
+                <span className="meta-val">{selectedBatchModal.source} ({selectedBatchModal.container})</span>
+              </div>
+              <div className="modal-meta-row">
+                <span className="meta-lbl">Confidence</span>
+                <span className="meta-val text-green">{selectedBatchModal.confidence || '99.4%'}</span>
+              </div>
+              <div className="modal-meta-row">
+                <span className="meta-lbl">Vision Pipeline</span>
+                <span className="meta-val">{selectedBatchModal.method || 'YOLOv8-Fry Live'}</span>
+              </div>
+            </div>
+
+            <div className="batch-modal-actions-row">
+              <button 
+                type="button" 
+                className="modal-csv-btn"
+                onClick={(e) => handleExportCSV(selectedBatchModal, e)}
+              >
+                <Download size={16} />
+                <span>Export CSV</span>
+              </button>
+              <button 
+                type="button" 
+                className="modal-close-action-btn"
+                onClick={() => setSelectedBatchModal(null)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
