@@ -895,24 +895,26 @@ body::-webkit-scrollbar,
 .home-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .home-logo-circle {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: var(--blue);
+  background: #2563EB;
   display: grid;
   place-items: center;
-  box-shadow: 0 4px 10px rgba(47, 107, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+  flex-shrink: 0;
 }
 
 .home-brand-title {
-  font-size: 19px;
-  font-weight: 900;
-  color: #0C1A30;
-  letter-spacing: -0.02em;
+  font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, sans-serif;
+  font-size: 21px;
+  font-weight: 800;
+  color: #0C182A;
+  letter-spacing: -0.025em;
 }
 
 .home-header-actions {
@@ -925,10 +927,10 @@ body::-webkit-scrollbar,
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #F1F6FD;
+  background: #EEF4FD;
   display: grid;
   place-items: center;
-  color: #2F4265;
+  color: #1E293B;
   border: none;
   cursor: pointer;
   position: relative;
@@ -936,26 +938,26 @@ body::-webkit-scrollbar,
 }
 
 .icon-action-btn:hover {
-  background: #E5EFFD;
+  background: #E2EDFC;
   transform: translateY(-1px);
 }
 
 .notif-red-dot {
   position: absolute;
-  top: 9px;
-  right: 10px;
-  width: 8px;
-  height: 8px;
+  top: 8px;
+  right: 9px;
+  width: 7.5px;
+  height: 7.5px;
   border-radius: 50%;
   background: #EF4444;
-  border: 2px solid #FFFFFF;
+  border: 1.5px solid #FFFFFF;
 }
 
 /* Hero Section with Real Tub Image Blend */
 .home-hero-section {
   position: relative;
-  padding: 20px 20px 32px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFD 50%, #EDF4FE 100%);
+  padding: 22px 20px 38px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 40%, #F6F9FE 80%, #ECF4FE 100%);
   overflow: hidden;
 }
 
@@ -964,43 +966,46 @@ body::-webkit-scrollbar,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 220px;
+  min-height: 225px;
 }
 
 .hero-text-content {
   position: relative;
   z-index: 2;
-  max-width: 58%;
+  max-width: 56%;
 }
 
 .hero-heading {
-  font-size: 31px;
+  font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, sans-serif;
+  font-size: 32px;
   font-weight: 900;
-  color: #0C1A30;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
+  color: #0C182A;
+  line-height: 1.14;
+  letter-spacing: -0.035em;
   margin-bottom: 12px;
 }
 
 .highlight-blue {
-  color: #1A73E8;
+  color: #1D70F7;
 }
 
 .hero-subtext {
+  font-family: 'Plus Jakarta Sans', 'Outfit', 'Nunito', system-ui, sans-serif;
   font-size: 13.5px;
   line-height: 1.45;
-  color: #556987;
+  color: #475569;
   font-weight: 500;
+  max-width: 235px;
 }
 
 /* Top-Right Circular Basin from hero.png */
 .hero-image-wrapper {
   position: absolute;
-  top: -16px;
-  right: -24px;
-  width: 62%;
-  max-width: 280px;
-  height: 118%;
+  top: -12px;
+  right: -15px;
+  width: 58%;
+  max-width: 290px;
+  height: 114%;
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
@@ -1010,20 +1015,16 @@ body::-webkit-scrollbar,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 25%;
+  object-position: 70% 28%;
   display: block;
-  mask-image: radial-gradient(circle at 75% 45%, black 45%, rgba(0, 0, 0, 0.8) 65%, transparent 98%),
-              linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.15) 10%, #000 35%);
-  -webkit-mask-image: radial-gradient(circle at 75% 45%, black 45%, rgba(0, 0, 0, 0.8) 65%, transparent 98%),
-                      linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.15) 10%, #000 35%);
-  mask-composite: intersect;
-  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 12%, rgba(0, 0, 0, 0.45) 28%, rgba(0, 0, 0, 0.9) 46%, #000 62%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 12%, rgba(0, 0, 0, 0.45) 28%, rgba(0, 0, 0, 0.9) 46%, #000 62%);
 }
 
 .hero-image-blend-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.15) 28%, transparent 55%);
+  background: linear-gradient(to right, #FFFFFF 0%, rgba(255, 255, 255, 0.65) 18%, rgba(255, 255, 255, 0) 45%);
   pointer-events: none;
 }
 
@@ -1032,7 +1033,7 @@ body::-webkit-scrollbar,
   bottom: 0;
   left: 0;
   right: 0;
-  height: 24px;
+  height: 36px;
   z-index: 3;
   pointer-events: none;
 }
@@ -1782,7 +1783,14 @@ body::-webkit-scrollbar,
   }
 
   .hero-wave-divider {
-    display: none;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 38px;
+    z-index: 3;
+    pointer-events: none;
   }
 
   /* 3-Column Action Cards Grid (Side-by-Side) */
@@ -1962,7 +1970,7 @@ body::-webkit-scrollbar,
   }
 
   .home-hero-section {
-    padding: 20px 18px 26px;
+    padding: 20px 18px 30px;
     border-radius: 0;
     margin: 0;
     width: 100%;
@@ -1971,27 +1979,29 @@ body::-webkit-scrollbar,
   }
 
   .hero-text-content {
-    max-width: 58%;
+    max-width: 56%;
   }
 
   .hero-heading {
-    font-size: 27px;
-    line-height: 1.15;
+    font-size: clamp(28px, 7.5vw, 32px);
+    line-height: 1.14;
+    letter-spacing: -0.03em;
     margin-bottom: 10px;
   }
 
   .hero-subtext {
-    font-size: 13px;
-    line-height: 1.42;
+    font-size: 13.5px;
+    line-height: 1.45;
+    max-width: 225px;
   }
 
   .hero-image-wrapper {
     position: absolute;
-    top: -14px;
-    right: -20px;
-    width: 60%;
-    max-width: 260px;
-    height: 116%;
+    top: -10px;
+    right: -15px;
+    width: 58%;
+    max-width: 280px;
+    height: 114%;
     border-radius: 0;
     border: none;
     box-shadow: none;
@@ -1999,6 +2009,7 @@ body::-webkit-scrollbar,
 
   .hero-wave-divider {
     display: block;
+    height: 34px;
   }
 
   .action-cards-grid {

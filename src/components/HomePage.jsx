@@ -96,9 +96,9 @@ export default function HomePage({ user, onLogout }) {
         <header className="home-header">
           <div className="home-brand">
             <div className="home-logo-circle" aria-label="Blue Harvest Logo">
-              <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
-                <path d="M4 16 C8 8, 16 6, 22 10 L28 6 V26 L22 22 C16 26, 8 24, 4 16 Z" fill="#FFFFFF"/>
-                <circle cx="10" cy="14" r="2" fill="#2F6BFF"/>
+              <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+                <path d="M4.5 14C7 8.5 14 7 19.5 10.5L25 7V21L19.5 17.5C14 21 7 19.5 4.5 14Z" fill="#FFFFFF"/>
+                <circle cx="9" cy="13" r="1.5" fill="#2563EB"/>
               </svg>
             </div>
             <span className="home-brand-title">Blue Harvest</span>
@@ -111,7 +111,7 @@ export default function HomePage({ user, onLogout }) {
               onClick={() => setShowNotifications(!showNotifications)}
               aria-label="Notifications"
             >
-              <Bell size={20} className="header-action-icon" />
+              <Bell size={19} strokeWidth={2.2} className="header-action-icon" />
               <span className="notif-red-dot"></span>
             </button>
 
@@ -121,7 +121,9 @@ export default function HomePage({ user, onLogout }) {
               onClick={() => setShowProfileModal(true)}
               aria-label="User Profile"
             >
-              <User size={20} className="header-action-icon" />
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="#3B82F6">
+                <path d="M12 12c2.4 0 4.4-2 4.4-4.4S14.4 3.2 12 3.2 7.6 5.2 7.6 7.6 9.6 12 12 12zm0 2.4c-3 0-9 1.5-9 4.4v2h18v-2c0-2.9-6-4.4-9-4.4z"/>
+              </svg>
             </button>
           </div>
         </header>
@@ -154,17 +156,17 @@ export default function HomePage({ user, onLogout }) {
 
               {/* Layered soft blue waves at the base of hero matching screenshot */}
               <div className="hero-wave-divider" aria-hidden="true">
-                <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="hero-wave-svg">
+                <svg viewBox="0 0 500 56" preserveAspectRatio="none" className="hero-wave-svg">
                   <path 
-                    d="M0,20 C130,40 280,8 500,26 L500,50 L0,50 Z" 
-                    fill="rgba(191, 219, 254, 0.45)"
+                    d="M0,22 C130,38 270,12 500,28 L500,56 L0,56 Z" 
+                    fill="rgba(191, 219, 254, 0.55)"
                   />
                   <path 
-                    d="M0,28 C150,46 300,16 500,34 L500,50 L0,50 Z" 
-                    fill="rgba(147, 197, 253, 0.65)"
+                    d="M0,32 C150,46 300,20 500,36 L500,56 L0,56 Z" 
+                    fill="rgba(147, 197, 253, 0.75)"
                   />
                   <path 
-                    d="M0,38 C170,48 310,26 500,42 L500,50 L0,50 Z" 
+                    d="M0,42 C160,52 330,30 500,44 L500,56 L0,56 Z" 
                     fill="#FFFFFF"
                   />
                 </svg>

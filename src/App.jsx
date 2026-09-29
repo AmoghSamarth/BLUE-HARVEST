@@ -6,7 +6,9 @@ import ForgotPasswordModal from './components/ForgotPasswordModal';
 import './App.css';
 
 export default function App() {
-  const [activeScreen, setActiveScreen] = useState('login'); // 'login' | 'signup' | 'home'
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const initialScreen = searchParams?.get('screen') || 'login';
+  const [activeScreen, setActiveScreen] = useState(initialScreen); // 'login' | 'signup' | 'home'
   const [currentUser, setCurrentUser] = useState(null);
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [notification, setNotification] = useState(null);
