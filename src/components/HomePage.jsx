@@ -154,19 +154,19 @@ export default function HomePage({ user, onLogout }) {
                 </div>
               </div>
 
-              {/* Layered soft blue waves at the base of hero matching screenshot */}
+              {/* Soft blue tide wave accent at base of hero, keeping left side under text clean white */}
               <div className="hero-wave-divider" aria-hidden="true">
-                <svg viewBox="0 0 500 56" preserveAspectRatio="none" className="hero-wave-svg">
+                <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="hero-wave-svg">
                   <path 
-                    d="M0,22 C130,38 270,12 500,28 L500,56 L0,56 Z" 
-                    fill="rgba(191, 219, 254, 0.55)"
+                    d="M0,48 C140,49 260,22 500,30 L500,50 L0,50 Z" 
+                    fill="rgba(191, 219, 254, 0.5)"
                   />
                   <path 
-                    d="M0,32 C150,46 300,20 500,36 L500,56 L0,56 Z" 
-                    fill="rgba(147, 197, 253, 0.75)"
+                    d="M0,49 C160,50 290,28 500,36 L500,50 L0,50 Z" 
+                    fill="rgba(147, 197, 253, 0.7)"
                   />
                   <path 
-                    d="M0,42 C160,52 330,30 500,44 L500,56 L0,56 Z" 
+                    d="M0,50 C180,50 330,36 500,44 L500,50 L0,50 Z" 
                     fill="#FFFFFF"
                   />
                 </svg>

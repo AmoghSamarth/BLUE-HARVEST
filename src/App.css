@@ -953,11 +953,11 @@ body::-webkit-scrollbar,
   border: 1.5px solid #FFFFFF;
 }
 
-/* Hero Section with Real Tub Image Blend */
+/* Hero Section with Clean White Background */
 .home-hero-section {
   position: relative;
-  padding: 22px 20px 38px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 40%, #F6F9FE 80%, #ECF4FE 100%);
+  padding: 22px 20px 40px;
+  background: #FFFFFF;
   overflow: hidden;
 }
 
@@ -973,6 +973,7 @@ body::-webkit-scrollbar,
   position: relative;
   z-index: 2;
   max-width: 56%;
+  padding-bottom: 22px;
 }
 
 .hero-heading {
@@ -1033,7 +1034,7 @@ body::-webkit-scrollbar,
   bottom: 0;
   left: 0;
   right: 0;
-  height: 36px;
+  height: 26px;
   z-index: 3;
   pointer-events: none;
 }
@@ -1714,7 +1715,7 @@ body::-webkit-scrollbar,
     max-width: 1200px;
     margin: 16px auto 32px;
     width: calc(100% - 64px);
-    background: linear-gradient(135deg, #FFFFFF 0%, #F5F9FE 55%, #EAF3FE 100%);
+    background: #FFFFFF;
     border-radius: 28px;
     border: 1px solid #E2E8F0;
     box-shadow: 0 10px 30px rgba(37, 99, 235, 0.06);
@@ -1970,10 +1971,11 @@ body::-webkit-scrollbar,
   }
 
   .home-hero-section {
-    padding: 20px 18px 30px;
+    padding: 20px 18px 36px;
     border-radius: 0;
     margin: 0;
     width: 100%;
+    background: #FFFFFF;
     border: none;
     box-shadow: none;
   }
