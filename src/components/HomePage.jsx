@@ -19,6 +19,8 @@ import {
   Sliders,
   Check
 } from 'lucide-react';
+import heroImage from '../assets/hero.png';
+import agriImage from '../assets/agriculture.png';
 
 export default function HomePage({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('home');
@@ -128,45 +130,43 @@ export default function HomePage({ user, onLogout }) {
           <>
             {/* Hero Section with Tub Image Blend */}
             <section className="home-hero-section">
-              <div className="hero-text-content">
-                <h1 className="hero-heading">
-                  Count Fish<br />
-                  Fingerlings <span className="highlight-blue">Easily</span>
-                </h1>
-                <p className="hero-subtext">
-                  Upload a photo or use your camera to get an accurate count of fish fingerlings and fry.
-                </p>
-              </div>
+              <div className="hero-content-wrapper">
+                <div className="hero-text-content">
+                  <h1 className="hero-heading">
+                    Count Fish<br />
+                    Fingerlings <span className="highlight-blue">Easily</span>
+                  </h1>
+                  <p className="hero-subtext">
+                    Upload a photo or use your camera to get an accurate count of fish fingerlings and fry.
+                  </p>
+                </div>
 
-              {/* Top-Right Circular Tub with Fish Fry Swimming */}
-              <div className="hero-tub-illustration" aria-hidden="true">
-                <div className="tub-outer-rim">
-                  <div className="tub-water-surface">
-                    {/* Realistic Fry Particles in Basin */}
-                    <div className="fry-particles-group">
-                      {[...Array(38)].map((_, i) => (
-                        <div 
-                          key={i} 
-                          className="fry-particle"
-                          style={{
-                            top: `${12 + (i * 23) % 72}%`,
-                            left: `${14 + (i * 31) % 74}%`,
-                            transform: `rotate(${((i * 47) % 360)}deg)`,
-                            animationDelay: `${(i * 0.18)}s`
-                          }}
-                        ></div>
-                      ))}
-                    </div>
-                    {/* Basin Water Ripple Lighting */}
-                    <div className="water-glare-ring"></div>
-                  </div>
+                {/* Top-Right Circular Basin with Fingerlings from hero.png */}
+                <div className="hero-image-wrapper" aria-label="Fish fry swimming in nursery basin">
+                  <img 
+                    src={heroImage} 
+                    alt="Count fish fingerlings in blue basin" 
+                    className="hero-tub-img" 
+                  />
+                  <div className="hero-image-blend-overlay"></div>
                 </div>
               </div>
 
-              {/* Subtle wave curve at the base of hero */}
-              <div className="hero-wave-divider">
-                <svg viewBox="0 0 420 40" preserveAspectRatio="none">
-                  <path d="M0,25 C120,40 280,10 420,28 L420,40 L0,40 Z" fill="#FFFFFF"/>
+              {/* Layered soft blue waves at the base of hero matching screenshot */}
+              <div className="hero-wave-divider" aria-hidden="true">
+                <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="hero-wave-svg">
+                  <path 
+                    d="M0,20 C130,40 280,8 500,26 L500,50 L0,50 Z" 
+                    fill="rgba(191, 219, 254, 0.45)"
+                  />
+                  <path 
+                    d="M0,28 C150,46 300,16 500,34 L500,50 L0,50 Z" 
+                    fill="rgba(147, 197, 253, 0.65)"
+                  />
+                  <path 
+                    d="M0,38 C170,48 310,26 500,42 L500,50 L0,50 Z" 
+                    fill="#FFFFFF"
+                  />
                 </svg>
               </div>
             </section>
@@ -295,31 +295,13 @@ export default function HomePage({ user, onLogout }) {
                 </div>
               </div>
 
-              {/* Landscape Illustration Artwork (Pond, Trees, Hills, Clouds) */}
+              {/* Landscape Illustration Artwork from Assets */}
               <div className="banner-artwork" aria-hidden="true">
-                <svg viewBox="0 0 240 120" preserveAspectRatio="none">
-                  {/* Sky Clouds */}
-                  <path d="M60 25 C65 18 78 18 84 25 C90 22 100 26 102 32 H54 C54 28 56 24 60 25 Z" fill="#FFFFFF" opacity="0.8"/>
-                  <path d="M160 18 C164 12 176 12 181 18 C186 15 194 19 196 24 H154 C154 20 156 17 160 18 Z" fill="#FFFFFF" opacity="0.8"/>
-                  
-                  {/* Background Soft Blue Mountains */}
-                  <path d="M90 60 Q140 30 190 60 L240 65 V120 H90 Z" fill="#B9D5FA" opacity="0.6"/>
-                  
-                  {/* Rolling Green Hills */}
-                  <path d="M80 80 Q130 50 180 75 Q210 65 240 70 V120 H80 Z" fill="#58B27B"/>
-                  
-                  {/* Tree Foliage */}
-                  <circle cx="160" cy="55" r="16" fill="#3D9962"/>
-                  <circle cx="180" cy="50" r="18" fill="#2E8550"/>
-                  <circle cx="205" cy="53" r="17" fill="#3D9962"/>
-                  <circle cx="225" cy="56" r="15" fill="#2E8550"/>
-                  <circle cx="140" cy="62" r="12" fill="#4AA86F"/>
-
-                  {/* Water Pond in Foreground */}
-                  <path d="M95 120 Q120 78 170 82 Q220 86 240 95 V120 H95 Z" fill="#60A5FA"/>
-                  <path d="M125 120 Q150 92 195 95 Q225 98 240 105 V120 H125 Z" fill="#38BDF8"/>
-                  <path d="M100 82 Q125 76 168 80 Q215 84 240 92" stroke="#A7F3D0" strokeWidth="3" fill="none"/>
-                </svg>
+                <img 
+                  src={agriImage} 
+                  alt="Sustainable Aquaculture Landscape" 
+                  className="banner-artwork-img" 
+                />
               </div>
             </section>
           </>
