@@ -303,10 +303,10 @@
   flex-shrink: 0;
 }
 
-/* Bottom Waves & Sign Up */
+/* Bottom Section (Sign Up) */
 .bottom-wave-section {
-  margin-top: auto;
-  padding-top: 22px;
+  width: 100%;
+  margin-top: 22px;
   display: flex;
   flex-direction: column;
   align-items: center;
