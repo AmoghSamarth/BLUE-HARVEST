@@ -956,7 +956,7 @@ body::-webkit-scrollbar,
 /* Hero Section with Clean White Background */
 .home-hero-section {
   position: relative;
-  padding: 22px 20px 48px;
+  padding: 22px 20px 42px;
   background: #FFFFFF;
   overflow: hidden;
 }
@@ -1035,7 +1035,7 @@ body::-webkit-scrollbar,
   bottom: 0;
   left: 0;
   right: 0;
-  height: 102px;
+  height: 75px;
   z-index: 2;
   pointer-events: none;
 }
@@ -1795,7 +1795,7 @@ body::-webkit-scrollbar,
     bottom: 0;
     left: 0;
     right: 0;
-    height: 102px;
+    height: 75px;
     z-index: 3;
     pointer-events: none;
   }
@@ -2017,7 +2017,7 @@ body::-webkit-scrollbar,
 
   .hero-wave-divider {
     display: block;
-    height: 98px;
+    height: 72px;
   }
 
   .action-cards-grid {

@@ -214,23 +214,23 @@ export default function HomePage({
                 </div>
               </div>
 
-              {/* Authentic dual-layer wave ribbons from screenshot */}
+              {/* Authentic dual-layer wave ribbons matching heroReference.png */}
               <div className="hero-wave-divider" aria-hidden="true">
-                <svg viewBox="0 0 432 75" preserveAspectRatio="none" className="hero-wave-svg">
-                  {/* Wave 1: Upper Light Blue Ribbon (#BDCFFA) */}
+                <svg viewBox="0 0 820 100" preserveAspectRatio="none" className="hero-wave-svg">
+                  {/* Wave 1: Upper Light Blue Ribbon (#BCD3FD) */}
                   <path 
-                    d="M0,54 C45,42 110,42 180,52 C240,60 330,64 432,54 L432,75 L0,75 Z" 
-                    fill="#BDCFFA"
+                    d="M0,46 C90,16 250,16 410,44 C530,65 670,68 820,36 L820,100 L0,100 Z" 
+                    fill="#BCD3FD"
                   />
-                  {/* Wave 2: Lower Medium Blue Ribbon (#A0BAF7) */}
+                  {/* Wave 2: Lower Soft Blue Ribbon (#97B9FC) */}
                   <path 
-                    d="M0,70 C45,60 110,60 180,70 C250,76 330,66 432,48 L432,75 L0,75 Z" 
-                    fill="#A0BAF7"
+                    d="M0,76 C90,56 250,56 410,74 C530,85 670,80 820,52 L820,100 L0,100 Z" 
+                    fill="#97B9FC"
                   />
-                  {/* Wave 3: Deep Blue Right Corner Accent (#2563EB) */}
+                  {/* Wave 3: Deep Blue Right Corner Accent (#1E6FFB) */}
                   <path 
-                    d="M370,75 C390,70 410,58 432,50 L432,75 Z" 
-                    fill="#2563EB"
+                    d="M710,100 C745,96 785,82 820,68 L820,100 Z" 
+                    fill="#1E6FFB"
                   />
                 </svg>
               </div>
