@@ -1034,8 +1034,8 @@ body::-webkit-scrollbar,
   bottom: 0;
   left: 0;
   right: 0;
-  height: 26px;
-  z-index: 3;
+  height: 52px;
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -1045,12 +1045,17 @@ body::-webkit-scrollbar,
   display: block;
 }
 
-/* Primary Action Cards Grid */
+/* Primary Action Cards Grid with rounded top sheet overlapping base of waves */
 .action-cards-grid {
+  position: relative;
+  z-index: 4;
+  background: #FFFFFF;
+  border-radius: 28px 28px 0 0;
+  margin-top: -12px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
-  padding: 16px 20px 0;
+  padding: 18px 20px 0;
   margin-bottom: 14px;
 }
 
@@ -1789,7 +1794,7 @@ body::-webkit-scrollbar,
     bottom: 0;
     left: 0;
     right: 0;
-    height: 38px;
+    height: 52px;
     z-index: 3;
     pointer-events: none;
   }
@@ -2011,12 +2016,14 @@ body::-webkit-scrollbar,
 
   .hero-wave-divider {
     display: block;
-    height: 34px;
+    height: 50px;
   }
 
   .action-cards-grid {
-    padding: 12px 18px 0;
+    padding: 16px 18px 0;
     gap: 12px;
+    border-radius: 28px 28px 0 0;
+    margin-top: -12px;
   }
 
   .sustainability-banner {

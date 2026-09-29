@@ -154,20 +154,23 @@ export default function HomePage({ user, onLogout }) {
                 </div>
               </div>
 
-              {/* Soft blue tide wave accent at base of hero, keeping left side under text clean white */}
+              {/* Authentic dual-layer wave ribbons from screenshot */}
               <div className="hero-wave-divider" aria-hidden="true">
-                <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="hero-wave-svg">
+                <svg viewBox="0 0 432 75" preserveAspectRatio="none" className="hero-wave-svg">
+                  {/* Wave 1: Upper Light Blue Ribbon (#BDCFFA) */}
                   <path 
-                    d="M0,48 C140,49 260,22 500,30 L500,50 L0,50 Z" 
-                    fill="rgba(191, 219, 254, 0.5)"
+                    d="M0,54 C45,42 110,42 180,52 C240,60 330,64 432,54 L432,75 L0,75 Z" 
+                    fill="#BDCFFA"
                   />
+                  {/* Wave 2: Lower Medium Blue Ribbon (#A0BAF7) */}
                   <path 
-                    d="M0,49 C160,50 290,28 500,36 L500,50 L0,50 Z" 
-                    fill="rgba(147, 197, 253, 0.7)"
+                    d="M0,70 C45,60 110,60 180,70 C250,76 330,66 432,48 L432,75 L0,75 Z" 
+                    fill="#A0BAF7"
                   />
+                  {/* Wave 3: Deep Blue Right Corner Accent (#2563EB) */}
                   <path 
-                    d="M0,50 C180,50 330,36 500,44 L500,50 L0,50 Z" 
-                    fill="#FFFFFF"
+                    d="M370,75 C390,70 410,58 432,50 L432,75 Z" 
+                    fill="#2563EB"
                   />
                 </svg>
               </div>
