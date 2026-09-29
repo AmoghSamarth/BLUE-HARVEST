@@ -15,6 +15,25 @@
   --input-shadow-inset: inset 2.5px 2.5px 5px rgba(180, 201, 230, 0.45), inset -2.5px -2.5px 5px #FFFFFF;
 }
 
+/* ==========================================================================
+   Universal Scrollbar Suppression (Hide scrollbars across all views & devices)
+   ========================================================================== */
+*, *::before, *::after, html, body, #root {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
+}
+
 /* Outer Viewport Wrapper (100% Full-Screen on Every View) */
 .app-viewport-wrapper {
   min-height: 100vh;
@@ -60,6 +79,14 @@
   background: var(--bg);
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.login-screen-wrapper::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Background Animated Tidal Waves (100% Full Width Across Any Screen) */
@@ -843,6 +870,14 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: 96px;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.home-scroll-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Header */
