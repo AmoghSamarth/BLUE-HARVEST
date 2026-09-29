@@ -1034,7 +1034,7 @@ body::-webkit-scrollbar,
   bottom: 0;
   left: 0;
   right: 0;
-  height: 52px;
+  height: 68px;
   z-index: 2;
   pointer-events: none;
 }
@@ -1794,7 +1794,7 @@ body::-webkit-scrollbar,
     bottom: 0;
     left: 0;
     right: 0;
-    height: 52px;
+    height: 68px;
     z-index: 3;
     pointer-events: none;
   }
@@ -2016,7 +2016,7 @@ body::-webkit-scrollbar,
 
   .hero-wave-divider {
     display: block;
-    height: 50px;
+    height: 65px;
   }
 
   .action-cards-grid {
