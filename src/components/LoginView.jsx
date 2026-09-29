@@ -31,33 +31,30 @@ export default function LoginView({
     setErrors({});
     setIsLoading(true);
 
-    // Simulate authentication
     setTimeout(() => {
       setIsLoading(false);
-      onLoginSuccess({
-        username: username.trim(),
-        role: 'Hatchery Manager',
-        pondLocation: 'Pond Delta #4',
-      });
-    }, 750);
+      if (onLoginSuccess) {
+        onLoginSuccess({
+          username: username.trim(),
+          role: 'Hatchery Manager',
+          pondLocation: 'Pond Delta #4',
+        });
+      }
+    }, 700);
   };
 
   const handleGoogleLogin = () => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      onLoginSuccess({
-        username: 'AquaFarmer',
-        role: 'Aquaculture Specialist',
-        pondLocation: 'Valley Hatchery 2',
-      });
+      if (onLoginSuccess) {
+        onLoginSuccess({
+          username: 'AquaFarmer',
+          role: 'Aquaculture Specialist',
+          pondLocation: 'Valley Hatchery 2',
+        });
+      }
     }, 600);
-  };
-
-  const fillDemoCredentials = () => {
-    setUsername('samarth_aquafarm');
-    setPassword('SpawnCounter2026!');
-    setErrors({});
   };
 
   return (
@@ -93,8 +90,8 @@ export default function LoginView({
         <div className="app-logo-badge" aria-label="Blue Harvest Logo">
           <svg 
             className="fish-swim-icon"
-            width="52" 
-            height="52" 
+            width="50" 
+            height="50" 
             viewBox="0 0 48 48" 
             fill="none"
           >
@@ -221,18 +218,6 @@ export default function LoginView({
           </svg>
           <span className="google-btn-text">Continue with Google</span>
         </button>
-
-        {/* Quick Demo Fill Pill */}
-        <div className="demo-credentials-bar">
-          <button 
-            type="button" 
-            className="demo-pill-btn"
-            onClick={fillDemoCredentials}
-            title="Auto-fill demo test credentials"
-          >
-            ⚡ Auto-fill Farmer Demo
-          </button>
-        </div>
 
         {/* Bottom Section Resting on Wave */}
         <div className="bottom-wave-section">

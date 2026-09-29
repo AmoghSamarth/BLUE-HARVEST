@@ -1,82 +1,51 @@
 import React, { useState } from 'react';
-import Navbar from './components/Navbar';
-import DeviceFrame from './components/DeviceFrame';
 import LoginView from './components/LoginView';
 import SignUpView from './components/SignUpView';
-import FishCounterDemo from './components/FishCounterDemo';
 import ForgotPasswordModal from './components/ForgotPasswordModal';
-import HelpModal from './components/HelpModal';
 import './App.css';
 
 export default function App() {
-  const [viewMode, setViewMode] = useState('mobile');
-  const [activeScreen, setActiveScreen] = useState('login'); // 'login' | 'signup' | 'counter'
-  const [currentUser, setCurrentUser] = useState(null);
+  const [activeScreen, setActiveScreen] = useState('login'); // 'login' | 'signup'
   const [showForgotModal, setShowForgotModal] = useState(false);
-  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [notification, setNotification] = useState(null);
 
   const handleLoginSuccess = (userData) => {
-    setCurrentUser(userData);
-    setActiveScreen('counter');
+    setNotification(`Welcome back, ${userData.username}!`);
+    setTimeout(() => setNotification(null), 3500);
   };
 
   const handleSignUpSuccess = (userData) => {
-    setCurrentUser(userData);
-    setActiveScreen('counter');
-  };
-
-  const handleLogout = () => {
-    setCurrentUser(null);
+    setNotification(`Account created for ${userData.username}!`);
     setActiveScreen('login');
+    setTimeout(() => setNotification(null), 3500);
   };
 
   return (
-    <div className="app-root-layout">
-      {/* Top Navbar with Responsive Art Direction Controls */}
-      <Navbar 
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-        isLoggedIn={activeScreen === 'counter'}
-        onLogout={handleLogout}
-        onOpenHelp={() => setShowHelpModal(true)}
-      />
+    <div className="app-viewport-wrapper">
+      <div className="app-mobile-container">
+        {activeScreen === 'login' ? (
+          <LoginView 
+            onLoginSuccess={handleLoginSuccess}
+            onSwitchToSignUp={() => setActiveScreen('signup')}
+            onForgotPassword={() => setShowForgotModal(true)}
+          />
+        ) : (
+          <SignUpView 
+            onSignUpSuccess={handleSignUpSuccess}
+            onSwitchToLogin={() => setActiveScreen('login')}
+          />
+        )}
 
-      {/* Main Responsive Stage */}
-      <main className="main-content-stage">
-        <DeviceFrame viewMode={viewMode}>
-          {activeScreen === 'login' && (
-            <LoginView 
-              onLoginSuccess={handleLoginSuccess}
-              onSwitchToSignUp={() => setActiveScreen('signup')}
-              onForgotPassword={() => setShowForgotModal(true)}
-            />
-          )}
+        {notification && (
+          <div className="app-toast-notification" role="status">
+            <span>{notification}</span>
+          </div>
+        )}
+      </div>
 
-          {activeScreen === 'signup' && (
-            <SignUpView 
-              onSignUpSuccess={handleSignUpSuccess}
-              onSwitchToLogin={() => setActiveScreen('login')}
-            />
-          )}
-
-          {activeScreen === 'counter' && (
-            <FishCounterDemo 
-              user={currentUser}
-              onLogout={handleLogout}
-            />
-          )}
-        </DeviceFrame>
-      </main>
-
-      {/* Modals */}
       <ForgotPasswordModal 
         isOpen={showForgotModal}
         onClose={() => setShowForgotModal(false)}
-      />
-
-      <HelpModal 
-        isOpen={showHelpModal}
-        onClose={() => setShowHelpModal(false)}
       />
     </div>
   );
