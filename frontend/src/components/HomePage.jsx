@@ -35,7 +35,12 @@ import {
   FileDown,
   Save,
   ArrowRight,
-  RotateCcw
+  RotateCcw,
+  Mail,
+  Phone,
+  Globe,
+  Palette,
+  Pencil
 } from 'lucide-react';
 import heroImage from '../assets/hero.png';
 import agriImage from '../assets/agriculture.png';
@@ -179,6 +184,39 @@ export default function HomePage({
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
+
+  // Profile settings state matching profileSectionReference.png
+  const [profileLocation, setProfileLocation] = useState(user?.pondLocation || 'Pond Delta #4');
+  const [profileEmail, setProfileEmail] = useState(user?.email || 'samarth@example.com');
+  const [profilePhone, setProfilePhone] = useState(user?.phone || '+91 98765 43210');
+  const [profileRole, setProfileRole] = useState(user?.role || 'Hatchery Manager');
+  const [profileUsername, setProfileUsername] = useState(user?.username || 'samarth_aquafarm');
+  const [profileNotificationsEnabled, setProfileNotificationsEnabled] = useState(true);
+  const [profileLanguage, setProfileLanguage] = useState('English');
+  const [profileTheme, setProfileTheme] = useState('Light (Default)');
+  const [profileToast, setProfileToast] = useState(null);
+
+  // Modals for profile actions
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [showLocationPickerModal, setShowLocationPickerModal] = useState(false);
+  const [showLanguagePickerModal, setShowLanguagePickerModal] = useState(false);
+  const [showThemePickerModal, setShowThemePickerModal] = useState(false);
+
+  // Profile Form Edit draft state
+  const [editFormData, setEditFormData] = useState({
+    username: user?.username || 'samarth_aquafarm',
+    role: user?.role || 'Hatchery Manager',
+    email: user?.email || 'samarth@example.com',
+    phone: user?.phone || '+91 98765 43210',
+    location: user?.pondLocation || 'Pond Delta #4'
+  });
+
+  const showProfileToastMsg = (msg) => {
+    setProfileToast(msg);
+    setTimeout(() => {
+      setProfileToast(null);
+    }, 2400);
+  };
 
   // Live Camera Scanner State
   const [showLiveCamera, setShowLiveCamera] = useState(false);
@@ -1281,35 +1319,239 @@ export default function HomePage({
           </div>
         )}
 
-        {/* Profile Tab View */}
+        {/* Profile Tab View matching profileSectionReference.png */}
         {activeTab === 'profile' && (
           <section className="profile-tab-content">
-            <h2 className="section-title">Aquafarm Profile</h2>
-            <div className="profile-card-details">
-              <div className="profile-avatar-circle">
-                <User size={36} className="profile-user-icon" />
-              </div>
-              <h3 className="profile-user-name">{user?.username || 'samarth_aquafarm'}</h3>
-              <p className="profile-user-role">{user?.role || 'Hatchery Manager'}</p>
-              <div className="profile-info-grid">
-                <div className="profile-info-row">
-                  <span>Farm Location</span>
-                  <strong>{user?.pondLocation || 'Pond Delta #4, Sector B'}</strong>
-                </div>
-                <div className="profile-info-row">
-                  <span>Detection Engine</span>
-                  <strong>YOLOv8-Fry Live v3.4</strong>
-                </div>
-              </div>
-              <button 
-                type="button" 
-                className="action-btn logout-action-btn"
-                onClick={onLogout}
-              >
-                <LogOut size={18} />
-                <span>Sign Out</span>
-              </button>
+            {/* Top Heading Group */}
+            <div className="profile-heading-group">
+              <h1 className="profile-main-title">Profile</h1>
+              <p className="profile-main-subtitle">Manage your farm details and account settings</p>
             </div>
+
+            {/* Farm & Manager Hero Card */}
+            <div className="profile-hero-card">
+              {/* Subtle wavy decorative vector background on the right */}
+              <div className="profile-hero-waves-bg" aria-hidden="true">
+                <svg viewBox="0 0 280 160" fill="none" preserveAspectRatio="none">
+                  <path d="M40 160C100 135 150 70 280 60V160H40Z" fill="url(#heroWaveGrad1)" />
+                  <path d="M90 160C140 125 190 95 280 90V160H90Z" fill="url(#heroWaveGrad2)" />
+                  <defs>
+                    <linearGradient id="heroWaveGrad1" x1="40" y1="110" x2="280" y2="110" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#E2EDFD" stopOpacity="0.75" />
+                      <stop stopColor="#CCE3FD" stopOpacity="0.4" />
+                    </linearGradient>
+                    <linearGradient id="heroWaveGrad2" x1="90" y1="125" x2="280" y2="125" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#EDF4FE" stopOpacity="0.9" />
+                      <stop stopColor="#DBEAFE" stopOpacity="0.75" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+
+              {/* Avatar & Manager Identity */}
+              <div className="profile-hero-top-row">
+                <div className="profile-hero-avatar-wrap">
+                  <div className="profile-hero-avatar-circle">
+                    <svg viewBox="0 0 24 24" fill="#3B82F6" className="profile-hero-avatar-svg">
+                      <path d="M12 12c2.4 0 4.4-2 4.4-4.4S14.4 3.2 12 3.2 7.6 5.2 7.6 7.6 9.6 12 12 12zm0 2.4c-3 0-9 1.5-9 4.4v2h18v-2c0-2.9-6-4.4-9-4.4z"/>
+                    </svg>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="profile-avatar-edit-badge"
+                    onClick={() => {
+                      setEditFormData({
+                        username: profileUsername,
+                        role: profileRole,
+                        email: profileEmail,
+                        phone: profilePhone,
+                        location: profileLocation
+                      });
+                      setShowEditProfileModal(true);
+                    }}
+                    aria-label="Edit Profile Details"
+                  >
+                    <Pencil size={11} strokeWidth={2.6} color="#FFFFFF" />
+                  </button>
+                </div>
+
+                <div className="profile-hero-identity">
+                  <h2 className="profile-hero-name">{profileUsername}</h2>
+                  <span className="profile-hero-role">{profileRole}</span>
+                </div>
+              </div>
+
+              {/* Farm Location Pill */}
+              <div 
+                className="profile-location-pill"
+                role="button"
+                tabIndex={0}
+                onClick={() => setShowLocationPickerModal(true)}
+                aria-label="Change Farm Location"
+              >
+                <div className="profile-location-left">
+                  <div className="profile-location-icon-badge">
+                    <MapPin size={17} fill="#2563EB" color="#2563EB" />
+                  </div>
+                  <div className="profile-location-text">
+                    <span className="profile-location-label">Farm Location</span>
+                    <strong className="profile-location-value">{profileLocation}</strong>
+                  </div>
+                </div>
+                <ChevronRight size={18} className="profile-row-chevron" />
+              </div>
+            </div>
+
+            {/* Account & Contact Card */}
+            <div className="profile-section-card">
+              <div className="profile-card-header">
+                <div className="profile-card-icon-badge">
+                  <User size={18} strokeWidth={2.4} color="#2563EB" />
+                </div>
+                <div className="profile-card-header-text">
+                  <h3 className="profile-card-title">Account & Contact</h3>
+                  <p className="profile-card-subtitle">Your account information</p>
+                </div>
+              </div>
+
+              <div className="profile-card-items-list">
+                <div 
+                  className="profile-info-row-item"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    setEditFormData({
+                      username: profileUsername,
+                      role: profileRole,
+                      email: profileEmail,
+                      phone: profilePhone,
+                      location: profileLocation
+                    });
+                    setShowEditProfileModal(true);
+                  }}
+                >
+                  <div className="profile-row-left">
+                    <Mail size={18} strokeWidth={2} className="profile-row-icon" />
+                    <span className="profile-row-label">Email</span>
+                  </div>
+                  <div className="profile-row-right">
+                    <span className="profile-row-value">{profileEmail}</span>
+                    <ChevronRight size={16} className="profile-row-chevron" />
+                  </div>
+                </div>
+
+                <div className="profile-row-divider" />
+
+                <div 
+                  className="profile-info-row-item"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    setEditFormData({
+                      username: profileUsername,
+                      role: profileRole,
+                      email: profileEmail,
+                      phone: profilePhone,
+                      location: profileLocation
+                    });
+                    setShowEditProfileModal(true);
+                  }}
+                >
+                  <div className="profile-row-left">
+                    <Phone size={18} strokeWidth={2} className="profile-row-icon" />
+                    <span className="profile-row-label">Phone Number</span>
+                  </div>
+                  <div className="profile-row-right">
+                    <span className="profile-row-value">{profilePhone}</span>
+                    <ChevronRight size={16} className="profile-row-chevron" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* App Settings Card */}
+            <div className="profile-section-card">
+              <div className="profile-card-header">
+                <div className="profile-card-icon-badge">
+                  <Settings size={18} strokeWidth={2.4} color="#2563EB" />
+                </div>
+                <div className="profile-card-header-text">
+                  <h3 className="profile-card-title">App Settings</h3>
+                  <p className="profile-card-subtitle">Customize your experience</p>
+                </div>
+              </div>
+
+              <div className="profile-card-items-list">
+                <div 
+                  className="profile-setting-row-item"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    const next = !profileNotificationsEnabled;
+                    setProfileNotificationsEnabled(next);
+                    showProfileToastMsg(next ? 'Notifications enabled' : 'Notifications muted');
+                  }}
+                >
+                  <div className="profile-row-left">
+                    <Bell size={18} strokeWidth={2} className="profile-row-icon" />
+                    <div className="profile-setting-text">
+                      <span className="profile-setting-title">Notifications</span>
+                      <span className="profile-setting-sub">
+                        {profileNotificationsEnabled ? 'Receive updates and alerts' : 'Notifications muted'}
+                      </span>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="profile-row-chevron" />
+                </div>
+
+                <div className="profile-row-divider" />
+
+                <div 
+                  className="profile-setting-row-item"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowLanguagePickerModal(true)}
+                >
+                  <div className="profile-row-left">
+                    <Globe size={18} strokeWidth={2} className="profile-row-icon" />
+                    <div className="profile-setting-text">
+                      <span className="profile-setting-title">Language</span>
+                      <span className="profile-setting-sub">{profileLanguage}</span>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="profile-row-chevron" />
+                </div>
+
+                <div className="profile-row-divider" />
+
+                <div 
+                  className="profile-setting-row-item"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowThemePickerModal(true)}
+                >
+                  <div className="profile-row-left">
+                    <Palette size={18} strokeWidth={2} className="profile-row-icon" />
+                    <div className="profile-setting-text">
+                      <span className="profile-setting-title">App Theme</span>
+                      <span className="profile-setting-sub">{profileTheme}</span>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="profile-row-chevron" />
+                </div>
+              </div>
+            </div>
+
+            {/* Sign Out Button */}
+            <button 
+              type="button" 
+              className="profile-signout-btn"
+              onClick={onLogout}
+              aria-label="Sign Out"
+            >
+              <LogOut size={18} strokeWidth={2.4} className="profile-signout-icon" />
+              <span>Sign Out</span>
+            </button>
           </section>
         )}
       </div>
@@ -1815,6 +2057,227 @@ export default function HomePage({
               />
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Edit Profile Modal */}
+      {showEditProfileModal && (
+        <div className="modal-backdrop" onClick={() => setShowEditProfileModal(false)}>
+          <div className="modal-card profile-edit-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="drawer-header">
+              <h3 className="drawer-title">Edit Account & Contact</h3>
+              <button 
+                type="button" 
+                className="drawer-close-btn"
+                onClick={() => setShowEditProfileModal(false)}
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form 
+              className="profile-edit-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setProfileUsername(editFormData.username);
+                setProfileRole(editFormData.role);
+                setProfileEmail(editFormData.email);
+                setProfilePhone(editFormData.phone);
+                setProfileLocation(editFormData.location);
+                setShowEditProfileModal(false);
+                showProfileToastMsg('Profile details updated successfully');
+              }}
+            >
+              <div className="form-group">
+                <label className="form-label">Username</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={editFormData.username}
+                  onChange={(e) => setEditFormData({ ...editFormData, username: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Role</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={editFormData.role}
+                  onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Email Address</label>
+                <input 
+                  type="email" 
+                  className="form-input" 
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Phone Number</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={editFormData.phone}
+                  onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="profile-edit-btn-row">
+                <button 
+                  type="button" 
+                  className="action-btn secondary-btn"
+                  onClick={() => setShowEditProfileModal(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="action-btn primary-btn"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Farm Location Picker Modal */}
+      {showLocationPickerModal && (
+        <div className="modal-backdrop" onClick={() => setShowLocationPickerModal(false)}>
+          <div className="modal-card profile-picker-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="drawer-header">
+              <h3 className="drawer-title">Select Farm Location</h3>
+              <button 
+                type="button" 
+                className="drawer-close-btn"
+                onClick={() => setShowLocationPickerModal(false)}
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="profile-picker-list">
+              {[
+                'Pond Delta #4',
+                'Nursery Tray #2',
+                'Fingerling Tank A',
+                'Main Pond #1',
+                'Breeding Basin C'
+              ].map((loc) => (
+                <div 
+                  key={loc}
+                  className={`profile-picker-option ${profileLocation === loc ? 'selected' : ''}`}
+                  onClick={() => {
+                    setProfileLocation(loc);
+                    setShowLocationPickerModal(false);
+                    showProfileToastMsg(`Location switched to ${loc}`);
+                  }}
+                >
+                  <div className="picker-option-left">
+                    <MapPin size={17} fill={profileLocation === loc ? '#2563EB' : 'none'} color="#2563EB" />
+                    <span>{loc}</span>
+                  </div>
+                  {profileLocation === loc && <Check size={18} color="#2563EB" strokeWidth={2.4} />}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Language Picker Modal */}
+      {showLanguagePickerModal && (
+        <div className="modal-backdrop" onClick={() => setShowLanguagePickerModal(false)}>
+          <div className="modal-card profile-picker-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="drawer-header">
+              <h3 className="drawer-title">Choose Language</h3>
+              <button 
+                type="button" 
+                className="drawer-close-btn"
+                onClick={() => setShowLanguagePickerModal(false)}
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="profile-picker-list">
+              {['English', 'Español', 'Bahasa Indonesia', 'Tiếng Việt', 'हिन्दी'].map((lang) => (
+                <div 
+                  key={lang}
+                  className={`profile-picker-option ${profileLanguage === lang ? 'selected' : ''}`}
+                  onClick={() => {
+                    setProfileLanguage(lang);
+                    setShowLanguagePickerModal(false);
+                    showProfileToastMsg(`Language set to ${lang}`);
+                  }}
+                >
+                  <div className="picker-option-left">
+                    <Globe size={17} color="#2563EB" />
+                    <span>{lang}</span>
+                  </div>
+                  {profileLanguage === lang && <Check size={18} color="#2563EB" strokeWidth={2.4} />}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Theme Picker Modal */}
+      {showThemePickerModal && (
+        <div className="modal-backdrop" onClick={() => setShowThemePickerModal(false)}>
+          <div className="modal-card profile-picker-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="drawer-header">
+              <h3 className="drawer-title">App Theme</h3>
+              <button 
+                type="button" 
+                className="drawer-close-btn"
+                onClick={() => setShowThemePickerModal(false)}
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="profile-picker-list">
+              {['Light (Default)', 'Dark (OLED)', 'System Appearance'].map((th) => (
+                <div 
+                  key={th}
+                  className={`profile-picker-option ${profileTheme === th ? 'selected' : ''}`}
+                  onClick={() => {
+                    setProfileTheme(th);
+                    setShowThemePickerModal(false);
+                    showProfileToastMsg(`Theme set to ${th}`);
+                  }}
+                >
+                  <div className="picker-option-left">
+                    <Palette size={17} color="#2563EB" />
+                    <span>{th}</span>
+                  </div>
+                  {profileTheme === th && <Check size={18} color="#2563EB" strokeWidth={2.4} />}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Toast Bar */}
+      {profileToast && (
+        <div className="profile-toast-bar" role="status">
+          <CheckCircle2 size={16} color="#10B981" />
+          <span>{profileToast}</span>
         </div>
       )}
     </div>
