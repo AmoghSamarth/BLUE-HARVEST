@@ -1547,10 +1547,14 @@ body::-webkit-scrollbar,
 .history-hero-section {
   position: relative;
   width: 100%;
-  padding: 12px 18px 16px;
+  min-height: 195px;
+  padding: 16px 18px 14px;
   background: #FFFFFF;
   overflow: hidden;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 /* Agriculture Artwork in Top-Right Hero matching historySectionReference.png */
@@ -1558,9 +1562,9 @@ body::-webkit-scrollbar,
   position: absolute;
   top: 0;
   right: 0;
-  width: 62%;
-  max-width: 460px;
-  height: 115px; /* Constrained height so it stays strictly in the upper hero zone */
+  width: 76%;
+  max-width: 520px;
+  height: 100%;
   pointer-events: none;
   z-index: 1;
   overflow: hidden;
@@ -1570,12 +1574,12 @@ body::-webkit-scrollbar,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 85% top;
+  object-position: 82% 30%;
   display: block;
-  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 10%, rgba(0, 0, 0, 0.45) 30%, rgba(0, 0, 0, 0.95) 55%, #000 75%),
-              linear-gradient(to bottom, #000 45%, rgba(0, 0, 0, 0.5) 70%, transparent 92%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 10%, rgba(0, 0, 0, 0.45) 30%, rgba(0, 0, 0, 0.95) 55%, #000 75%),
-                      linear-gradient(to bottom, #000 45%, rgba(0, 0, 0, 0.5) 70%, transparent 92%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.08) 12%, rgba(0, 0, 0, 0.5) 28%, rgba(0, 0, 0, 0.95) 50%, #000 70%),
+              linear-gradient(to bottom, #000 80%, rgba(0, 0, 0, 0.6) 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.08) 12%, rgba(0, 0, 0, 0.5) 28%, rgba(0, 0, 0, 0.95) 50%, #000 70%),
+                      linear-gradient(to bottom, #000 80%, rgba(0, 0, 0, 0.6) 92%, transparent 100%);
   mask-composite: intersect;
   -webkit-mask-composite: destination-in;
 }
@@ -1583,8 +1587,8 @@ body::-webkit-scrollbar,
 .history-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, #FFFFFF 0%, rgba(255, 255, 255, 0.8) 18%, rgba(255, 255, 255, 0) 50%),
-              linear-gradient(to bottom, transparent 65%, #FFFFFF 100%);
+  background: linear-gradient(to right, #FFFFFF 0%, rgba(255, 255, 255, 0.82) 20%, rgba(255, 255, 255, 0) 52%),
+              linear-gradient(to bottom, transparent 78%, #FFFFFF 100%);
   pointer-events: none;
 }
 
@@ -1593,7 +1597,8 @@ body::-webkit-scrollbar,
   position: relative;
   z-index: 2;
   width: 100%;
-  padding-bottom: 4px;
+  max-width: 250px;
+  padding-top: 10px;
 }
 
 .history-hero-heading {
@@ -1614,13 +1619,13 @@ body::-webkit-scrollbar,
   margin: 0;
 }
 
-/* Dedicated Search & Filter Controls Bar (Shifted down so it does NOT touch agriculture.png, 15% smaller) */
+/* Dedicated Search & Filter Controls Bar (Shifted down below the hero image so it does not touch it, 15% smaller) */
 .history-search-filter-section {
   position: relative;
   z-index: 20;
   width: 100%;
-  padding: 6px 18px 10px;
-  margin-top: 18px; /* Downward shift providing a generous clear buffer below the image */
+  padding: 8px 18px 12px;
+  margin-top: 4px;
   background: #FFFFFF;
 }
 
