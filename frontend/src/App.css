@@ -1542,17 +1542,17 @@ body::-webkit-scrollbar,
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: dualFishClockwise 2.4s linear infinite;
+  animation: dualFishAnticlockwise 2.2s linear infinite;
   transform-origin: center center;
   flex-shrink: 0;
 }
 
-@keyframes dualFishClockwise {
+@keyframes dualFishAnticlockwise {
   from {
     transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg);
+    transform: rotate(-360deg);
   }
 }
 
