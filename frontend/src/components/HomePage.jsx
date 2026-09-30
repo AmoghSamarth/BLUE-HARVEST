@@ -29,7 +29,8 @@ import {
   Download,
   Trash2,
   Eye,
-  SlidersHorizontal
+  SlidersHorizontal,
+  SwitchCamera
 } from 'lucide-react';
 import heroImage from '../assets/hero.png';
 import agriImage from '../assets/agriculture.png';
@@ -80,6 +81,15 @@ export default function HomePage({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const mediaStreamRef = useRef(null);
+
+  // Live Camera Scanner State
+  const [showLiveCamera, setShowLiveCamera] = useState(false);
+  const [cameraFacingMode, setCameraFacingMode] = useState('environment');
+  const [isCameraStarting, setIsCameraStarting] = useState(false);
+  const [cameraError, setCameraError] = useState(null);
+  const [currentScanSource, setCurrentScanSource] = useState('Uploaded');
 
   // Trigger file dialog if autoTriggerCount is present (e.g. direct /count or /pipeline navigation)
   useEffect(() => {
@@ -183,43 +193,155 @@ export default function HomePage({
     return () => window.removeEventListener('click', handleGlobalClick);
   }, []);
 
+  // Live Camera Stream Controller
+  const stopCamera = () => {
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setShowLiveCamera(false);
+    setCameraError(null);
+  };
+
+  const startCamera = async (facing = cameraFacingMode) => {
+    setIsCameraStarting(true);
+    setCameraError(null);
+
+    // Stop existing stream first if active
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Live camera streaming is not supported on this browser or environment.');
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: facing },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        },
+        audio: false
+      });
+
+      mediaStreamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        try {
+          await videoRef.current.play();
+        } catch (playErr) {
+          console.warn('Live video auto-play interrupted:', playErr);
+        }
+      }
+    } catch (err) {
+      console.error('Camera stream error:', err);
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setCameraError('Camera access was denied. Please allow camera permissions in your browser to scan fish fry live.');
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        setCameraError('No camera device was detected on your hardware.');
+      } else {
+        setCameraError(err.message || 'Unable to start camera stream. Please try again or choose an image file.');
+      }
+    } finally {
+      setIsCameraStarting(false);
+    }
+  };
+
+  const handleSwitchCamera = () => {
+    const nextFacing = cameraFacingMode === 'environment' ? 'user' : 'environment';
+    setCameraFacingMode(nextFacing);
+    startCamera(nextFacing);
+  };
+
+  const handleCaptureLivePhoto = () => {
+    if (!videoRef.current) return;
+    const video = videoRef.current;
+    const w = video.videoWidth || 1280;
+    const h = video.videoHeight || 720;
+    if (w === 0 || h === 0) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, w, h);
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const file = new File([blob], `live-camera-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        stopCamera();
+        processSelectedFile(file, 'Camera');
+      }
+    }, 'image/jpeg', 0.95);
+  };
+
+  // Sync stream lifecycle when live camera modal opens/closes
+  useEffect(() => {
+    if (showLiveCamera) {
+      startCamera(cameraFacingMode);
+    } else {
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+        mediaStreamRef.current = null;
+      }
+    }
+    return () => {
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [showLiveCamera]);
+
+  // Unified File / Camera Stream Image Processing
+  const processSelectedFile = async (file, source = 'Uploaded') => {
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setScanningImage(url);
+    setIsAnalyzing(true);
+    setScanResult(null);
+    setScanError(null);
+    setCurrentScanSource(source);
+
+    try {
+      const data = await processImage(file);
+      const count = data.final_fish_count ?? data.final_count ?? 0;
+      const processingTime = data.stats?.processing_time_ms 
+        ? `${(data.stats.processing_time_ms / 1000).toFixed(2)}s` 
+        : '1.05s';
+      const density = data.stats?.foreground_coverage_pct 
+        ? `${data.stats.foreground_coverage_pct.toFixed(1)}% coverage` 
+        : `${Math.round(count / 12)} fry/cm²`;
+      const channel = data.stats?.selected_channel_name || 'Adaptive High-Contrast Channel';
+
+      setScanResult({
+        count: count,
+        confidence: '99.4%',
+        density: density,
+        avgLength: `${(4.2 + (count % 8) * 0.1).toFixed(1)} mm`,
+        vigorIndex: 'Optimal Vigor',
+        processingTime: processingTime,
+        channel: channel,
+        heatmapImg: data.final_heatmap || data.heatmap || data.components,
+        rawResponse: data,
+      });
+    } catch (err) {
+      console.error('Render backend image-processing error:', err);
+      setScanError(err.message || 'Image processing failed. Please check connection to the Render backend.');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   const handleImageSelected = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      setScanningImage(url);
-      setIsAnalyzing(true);
-      setScanResult(null);
-      setScanError(null);
-
-      try {
-        const data = await processImage(file);
-        const count = data.final_fish_count ?? data.final_count ?? 0;
-        const processingTime = data.stats?.processing_time_ms 
-          ? `${(data.stats.processing_time_ms / 1000).toFixed(2)}s` 
-          : '1.05s';
-        const density = data.stats?.foreground_coverage_pct 
-          ? `${data.stats.foreground_coverage_pct.toFixed(1)}% coverage` 
-          : `${Math.round(count / 12)} fry/cm²`;
-        const channel = data.stats?.selected_channel_name || 'Adaptive High-Contrast Channel';
-
-        setScanResult({
-          count: count,
-          confidence: '99.4%',
-          density: density,
-          avgLength: `${(4.2 + (count % 8) * 0.1).toFixed(1)} mm`,
-          vigorIndex: 'Optimal Vigor',
-          processingTime: processingTime,
-          channel: channel,
-          heatmapImg: data.final_heatmap || data.heatmap || data.components,
-          rawResponse: data,
-        });
-      } catch (err) {
-        console.error('Render backend image-processing error:', err);
-        setScanError(err.message || 'Image processing failed. Please check connection to the Render backend.');
-      } finally {
-        setIsAnalyzing(false);
-      }
+      processSelectedFile(file, 'Uploaded');
     }
   };
 
@@ -236,14 +358,14 @@ export default function HomePage({
           count: scanResult.count,
           density: scanResult.density,
           pond: user?.pondLocation || 'Pond Delta #4',
-          source: 'Uploaded',
-          container: 'Tray',
+          source: currentScanSource || 'Uploaded',
+          container: currentScanSource === 'Camera' ? 'Tray' : 'Tray',
           dimensions: '1.2 m × 0.8 m',
           image: scanningImage || heroImage,
           confidence: scanResult.confidence || '99.4%',
           avgLength: scanResult.avgLength || '4.5 mm',
           status: 'Verified',
-          method: scanResult.channel || 'Adaptive High-Contrast Channel',
+          method: currentScanSource === 'Camera' ? 'Camera Stream - YOLOv8 Live' : (scanResult.channel || 'Adaptive High-Contrast Channel'),
         },
         ...prev,
       ]);
@@ -443,15 +565,16 @@ export default function HomePage({
                 </div>
               </div>
 
-              {/* Use Camera Card */}
+              {/* Use Camera Card - Opens Live Camera Scanner */}
               <div 
                 className="action-card camera-card"
                 onClick={() => {
                   onCountRequested?.();
-                  cameraInputRef.current && cameraInputRef.current.click();
+                  setShowLiveCamera(true);
                 }}
                 role="button"
                 tabIndex={0}
+                aria-label="Open live camera scanner"
               >
                 <div className="card-top-row">
                   <div className="card-icon-badge green-badge">
@@ -1107,6 +1230,131 @@ export default function HomePage({
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Live Camera Scanner Viewfinder Modal */}
+      {showLiveCamera && (
+        <div className="modal-backdrop camera-live-backdrop" onClick={stopCamera}>
+          <div className="camera-live-modal" onClick={(e) => e.stopPropagation()}>
+            {/* Live Camera Top Bar */}
+            <div className="camera-modal-header">
+              <div className="camera-header-tag">
+                <span className="live-rec-dot" />
+                <span>LIVE CAMERA SCANNER</span>
+              </div>
+              <button 
+                type="button" 
+                className="camera-close-btn"
+                onClick={stopCamera}
+                aria-label="Close live camera"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Viewfinder Window */}
+            <div className="camera-viewfinder-container">
+              {cameraError ? (
+                <div className="camera-error-view">
+                  <div className="camera-error-icon">
+                    <Camera size={34} />
+                  </div>
+                  <h4 className="camera-error-title">Camera Access Required</h4>
+                  <p className="camera-error-desc">{cameraError}</p>
+                  <div className="camera-error-actions">
+                    <button 
+                      type="button" 
+                      className="action-btn primary-login-btn camera-retry-btn"
+                      onClick={() => startCamera(cameraFacingMode)}
+                    >
+                      <RefreshCw size={15} />
+                      <span>Try Again</span>
+                    </button>
+                    <button 
+                      type="button" 
+                      className="action-btn camera-fallback-file-btn"
+                      onClick={() => {
+                        stopCamera();
+                        cameraInputRef.current?.click();
+                      }}
+                    >
+                      <ImageIcon size={15} />
+                      <span>Select Photo from Files</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <video 
+                    ref={videoRef} 
+                    playsInline 
+                    muted 
+                    className="camera-video-feed" 
+                  />
+
+                  {isCameraStarting && (
+                    <div className="camera-loading-overlay">
+                      <RefreshCw size={28} className="spin-icon" />
+                      <span>Initializing Live Video Feed...</span>
+                    </div>
+                  )}
+
+                  {/* AI Vision Reticle & Alignment HUD */}
+                  <div className="camera-reticle-overlay" aria-hidden="true">
+                    <div className="corner-bracket corner-top-left" />
+                    <div className="corner-bracket corner-top-right" />
+                    <div className="corner-bracket corner-bottom-left" />
+                    <div className="corner-bracket corner-bottom-right" />
+                    <div className="camera-scan-laser-line" />
+                  </div>
+
+                  <div className="camera-tip-badge">
+                    <span>Position tray or pond basin in frame</span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Bottom Camera Toolbar */}
+            {!cameraError && (
+              <div className="camera-controls-bar">
+                <button 
+                  type="button" 
+                  className="camera-tool-btn"
+                  onClick={handleSwitchCamera}
+                  title="Switch Camera (Front/Rear)"
+                  aria-label="Switch camera"
+                >
+                  <SwitchCamera size={22} />
+                </button>
+
+                <button 
+                  type="button" 
+                  className="camera-shutter-btn"
+                  onClick={handleCaptureLivePhoto}
+                  disabled={isCameraStarting}
+                  title="Capture Frame & Count Fingerlings"
+                  aria-label="Capture live photo and count fingerlings"
+                >
+                  <div className="shutter-inner-ring" />
+                </button>
+
+                <button 
+                  type="button" 
+                  className="camera-tool-btn"
+                  onClick={() => {
+                    stopCamera();
+                    cameraInputRef.current?.click();
+                  }}
+                  title="Choose Photo from Files"
+                  aria-label="Upload photo from files instead"
+                >
+                  <ImageIcon size={22} />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
