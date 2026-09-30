@@ -393,22 +393,26 @@ export default function HomePage({
                 </div>
               </div>
 
-              {/* Authentic dual-layer wave ribbons matching heroReference.png */}
+              {/* Authentic animated dual-layer wave ribbons matching heroReference.png */}
               <div className="hero-wave-divider" aria-hidden="true">
-                <svg viewBox="0 0 820 100" preserveAspectRatio="none" className="hero-wave-svg">
-                  {/* Wave 1: Upper Light Blue Ribbon (#BCD3FD) */}
+                {/* Wave Layer 1: Upper Light Blue Ribbon (#BCD3FD) */}
+                <svg viewBox="0 0 820 100" preserveAspectRatio="none" className="home-wave-layer home-wave-1">
                   <path 
-                    d="M0,46 C90,16 250,16 410,44 C530,65 670,68 820,36 L820,100 L0,100 Z" 
+                    d="M-60,46 C50,16 250,16 410,44 C530,65 670,68 820,36 C845,30 865,34 885,38 L885,100 L-60,100 Z" 
                     fill="#BCD3FD"
                   />
-                  {/* Wave 2: Lower Soft Blue Ribbon (#97B9FC) */}
+                </svg>
+                {/* Wave Layer 2: Lower Soft Blue Ribbon (#97B9FC) */}
+                <svg viewBox="0 0 820 100" preserveAspectRatio="none" className="home-wave-layer home-wave-2">
                   <path 
-                    d="M0,76 C90,56 250,56 410,74 C530,85 670,80 820,52 L820,100 L0,100 Z" 
+                    d="M-60,76 C50,56 250,56 410,74 C530,85 670,80 820,52 C845,46 865,52 885,58 L885,100 L-60,100 Z" 
                     fill="#97B9FC"
                   />
-                  {/* Wave 3: Deep Blue Right Corner Accent (#1E6FFB) */}
+                </svg>
+                {/* Wave Layer 3: Deep Blue Right Corner Accent (#1E6FFB) */}
+                <svg viewBox="0 0 820 100" preserveAspectRatio="none" className="home-wave-layer home-wave-3">
                   <path 
-                    d="M710,100 C745,96 785,82 820,68 L820,100 Z" 
+                    d="M710,100 C745,96 785,82 820,68 C845,60 865,65 885,70 L885,100 Z" 
                     fill="#1E6FFB"
                   />
                 </svg>

@@ -1038,12 +1038,70 @@ body::-webkit-scrollbar,
   height: 75px;
   z-index: 2;
   pointer-events: none;
+  overflow: hidden;
 }
 
-.hero-wave-svg {
-  width: 100%;
+.home-wave-layer {
+  position: absolute;
+  left: -6%;
+  bottom: 0;
+  width: 112%;
   height: 100%;
+  pointer-events: none;
+  will-change: transform;
+  transform-origin: 50% 100%;
   display: block;
+}
+
+/* Layer 1: Upper Light Blue Ribbon (#BCD3FD) */
+.home-wave-1 {
+  animation: heroWaveFlow1 6.5s ease-in-out infinite alternate;
+}
+
+/* Layer 2: Lower Soft Blue Ribbon (#97B9FC) */
+.home-wave-2 {
+  animation: heroWaveFlow2 9s ease-in-out infinite alternate-reverse;
+}
+
+/* Layer 3: Deep Blue Right Corner Accent (#1E6FFB) */
+.home-wave-3 {
+  animation: heroWaveFlow3 5.5s ease-in-out infinite alternate;
+}
+
+@keyframes heroWaveFlow1 {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+  50% {
+    transform: translate3d(2.4%, -8px, 0) scaleY(1.11);
+  }
+  100% {
+    transform: translate3d(-1.8%, 3px, 0) scaleY(0.95);
+  }
+}
+
+@keyframes heroWaveFlow2 {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+  50% {
+    transform: translate3d(-2.8%, -10px, 0) scaleY(1.14);
+  }
+  100% {
+    transform: translate3d(2.2%, 4px, 0) scaleY(0.92);
+  }
+}
+
+@keyframes heroWaveFlow3 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-1.5%, -5px, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(1.8%, 2px, 0) scale(0.96);
+  }
 }
 
 /* Primary Action Cards Grid with rounded top sheet overlapping base of waves */
@@ -2534,6 +2592,7 @@ body::-webkit-scrollbar,
     height: 75px;
     z-index: 3;
     pointer-events: none;
+    overflow: hidden;
   }
 
   /* 3-Column Action Cards Grid (Side-by-Side) */
