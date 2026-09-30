@@ -30,12 +30,32 @@ import {
   Trash2,
   Eye,
   SlidersHorizontal,
-  SwitchCamera
+  SwitchCamera,
+  MapPin,
+  FileDown
 } from 'lucide-react';
 import heroImage from '../assets/hero.png';
 import agriImage from '../assets/agriculture.png';
 import trayImage from '../assets/tray.png';
+import insightsBg from '../assets/insightsBg.png';
 import { processImage } from '../api/client';
+
+// Authentic Fish icon matching insightsReference.png
+const FishIcon = ({ size = 20, color = "#1D70F7" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+    <path d="M2.5 12C5.5 8 11.5 7 16.5 9.8L21.5 6.5V17.5L16.5 14.2C11.5 17 5.5 16 2.5 12Z" />
+    <circle cx="6.5" cy="11.2" r="1.3" fill="#FFFFFF" />
+  </svg>
+);
+
+// Authentic Counting Sessions stacked discs icon matching insightsReference.png
+const CountingSessionsIcon = ({ size = 22 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+    <ellipse cx="12" cy="6.5" rx="7.5" ry="2.8" fill="#10B981" />
+    <path d="M4.5 10.5C4.5 12 7.8 13.3 12 13.3C16.2 13.3 19.5 12 19.5 10.5" stroke="#10B981" strokeWidth="2.2" strokeLinecap="round" />
+    <path d="M4.5 15.5C4.5 17 7.8 18.3 12 18.3C16.2 18.3 19.5 17 19.5 15.5" stroke="#10B981" strokeWidth="2.2" strokeLinecap="round" />
+  </svg>
+);
 
 // Authentic blue circular basin / tank tub icon matching historySectionReference.png
 const BasinIcon = ({ size = 18 }) => (
@@ -90,6 +110,128 @@ export default function HomePage({
   const [isCameraStarting, setIsCameraStarting] = useState(false);
   const [cameraError, setCameraError] = useState(null);
   const [currentScanSource, setCurrentScanSource] = useState('Uploaded');
+
+  // Farm Insights State & Dynamic Dataset matching insightsReference.png
+  const [activeInsightsRange, setActiveInsightsRange] = useState('7 Days');
+  const insightsDataByRange = {
+    '7 Days': {
+      totalFish: 8940,
+      sessions: 18,
+      locations: [
+        { name: 'Pond Delta #4', count: 2480, percentage: 68, color: '#3B82F6' },
+        { name: 'Nursery Tray #2', count: 1920, percentage: 54, color: '#10B981' },
+        { name: 'Main Pond #1', count: 1750, percentage: 48, color: '#F59E0B' },
+        { name: 'Fingerling Tank A', count: 1240, percentage: 36, color: '#A855F7' },
+      ],
+    },
+    '30 Days': {
+      totalFish: 28450,
+      sessions: 56,
+      locations: [
+        { name: 'Pond Delta #4', count: 8900, percentage: 72, color: '#3B82F6' },
+        { name: 'Nursery Tray #2', count: 6720, percentage: 55, color: '#10B981' },
+        { name: 'Main Pond #1', count: 5830, percentage: 47, color: '#F59E0B' },
+        { name: 'Fingerling Tank A', count: 4200, percentage: 34, color: '#A855F7' },
+      ],
+    },
+    'This Month': {
+      totalFish: 24180,
+      sessions: 49,
+      locations: [
+        { name: 'Pond Delta #4', count: 7650, percentage: 70, color: '#3B82F6' },
+        { name: 'Nursery Tray #2', count: 5840, percentage: 53, color: '#10B981' },
+        { name: 'Main Pond #1', count: 4950, percentage: 45, color: '#F59E0B' },
+        { name: 'Fingerling Tank A', count: 3640, percentage: 33, color: '#A855F7' },
+      ],
+    },
+    'All Time': {
+      totalFish: 86320,
+      sessions: 172,
+      locations: [
+        { name: 'Pond Delta #4', count: 28400, percentage: 75, color: '#3B82F6' },
+        { name: 'Nursery Tray #2', count: 21600, percentage: 57, color: '#10B981' },
+        { name: 'Main Pond #1', count: 18120, percentage: 48, color: '#F59E0B' },
+        { name: 'Fingerling Tank A', count: 13200, percentage: 35, color: '#A855F7' },
+      ],
+    },
+  };
+
+  const handleDownloadPDFReport = () => {
+    const current = insightsDataByRange[activeInsightsRange] || insightsDataByRange['7 Days'];
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>BlueHarvest - Farm Insights Report (${activeInsightsRange})</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #0C182A; background: #FFFFFF; }
+            .header { border-bottom: 2px solid #2563EB; padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+            h1 { margin: 0; color: #1D70F7; font-size: 26px; }
+            .subtitle { color: #64748B; margin: 4px 0 0; }
+            .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+            .stat-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px; }
+            .stat-num { font-size: 32px; font-weight: 800; color: #0C182A; margin: 6px 0; }
+            .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            .table th, .table td { text-align: left; padding: 12px; border-bottom: 1px solid #E2E8F0; }
+            .table th { background: #EFF6FF; color: #1D70F7; }
+            .footer { margin-top: 40px; font-size: 12px; color: #94A3B8; text-align: center; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <h1>BlueHarvest — Farm Insights Report</h1>
+              <p class="subtitle">Time Range: ${activeInsightsRange} • Exported: ${new Date().toLocaleDateString()}</p>
+            </div>
+            <div>
+              <strong>${user?.pondLocation || 'Pond Delta #4'}</strong>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div style="color: #64748B; font-size: 14px;">Total Fish Counted</div>
+              <div class="stat-num">${current.totalFish.toLocaleString()}</div>
+              <div style="color: #10B981; font-weight: 600;">Fish Fry • Verified Accuracy</div>
+            </div>
+            <div class="stat-box">
+              <div style="color: #64748B; font-size: 14px;">Counting Sessions</div>
+              <div class="stat-num">${current.sessions}</div>
+              <div style="color: #64748B;">Computer vision automated batch logs</div>
+            </div>
+          </div>
+          <h3>Counts by Location Breakdown</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Location Area</th>
+                <th>Total Fingerlings</th>
+                <th>Share of Harvest</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${current.locations.map(l => `
+                <tr>
+                  <td><strong>${l.name}</strong></td>
+                  <td>${l.count.toLocaleString()} fry</td>
+                  <td>${l.percentage}%</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="footer">
+            BlueHarvest AI Aquaculture Vision Engine • Automated Hatchery Report
+          </div>
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+  };
 
   // Trigger file dialog if autoTriggerCount is present (e.g. direct /count or /pipeline navigation)
   useEffect(() => {
@@ -971,27 +1113,106 @@ export default function HomePage({
           </div>
         )}
 
-        {/* Reports Tab View */}
-        {activeTab === 'reports' && (
-          <section className="reports-tab-content">
-            <h2 className="section-title">Hatchery Reports</h2>
-            <div className="report-summary-card">
-              <div className="summary-stat-row">
-                <div className="summary-stat">
-                  <span className="stat-title">Total Fry Counted</span>
-                  <span className="stat-value">12,480</span>
-                </div>
-                <div className="summary-stat">
-                  <span className="stat-title">Avg Accuracy</span>
-                  <span className="stat-value highlight">99.4%</span>
-                </div>
+        {/* Farm Insights Tab View matching insightsReference.png */}
+        {(activeTab === 'insights' || activeTab === 'reports') && (
+          <div className="insights-tab-view-container">
+            {/* Top Hero with insightsBg.png Artwork */}
+            <section className="insights-hero-section">
+              <div className="insights-hero-art-wrapper" aria-hidden="true">
+                <img 
+                  src={insightsBg} 
+                  alt="Aquaculture farm landscape with pond and mountains" 
+                  className="insights-hero-art-img" 
+                />
+                <div className="insights-hero-overlay" />
               </div>
-              <div className="report-progress-bar">
-                <div className="progress-fill" style={{ width: '84%' }}></div>
+
+              <div className="insights-hero-content">
+                <h1 className="insights-hero-heading">Farm Insights</h1>
+                <p className="insights-hero-subtext">
+                  See how many fish you have counted and where they were counted.
+                </p>
               </div>
-              <span className="progress-caption">Monthly Nursery Target: 84% Achieved</span>
+            </section>
+
+            {/* Time Filter Pills matching insightsReference.png */}
+            <div className="insights-filter-pills-row">
+              {['7 Days', '30 Days', 'This Month', 'All Time'].map((period) => (
+                <button
+                  key={period}
+                  type="button"
+                  className={`insights-filter-pill ${activeInsightsRange === period ? 'active' : ''}`}
+                  onClick={() => setActiveInsightsRange(period)}
+                >
+                  {period}
+                </button>
+              ))}
             </div>
-          </section>
+
+            {/* 2 Primary KPI Summary Cards matching insightsReference.png */}
+            <div className="insights-kpi-cards-grid">
+              {/* Total Fish Counted Card */}
+              <div className="insights-kpi-card total-fish-card">
+                <div className="insights-kpi-icon-badge blue-badge">
+                  <FishIcon size={20} color="#1D70F7" />
+                </div>
+                <span className="insights-kpi-label">Total Fish Counted</span>
+                <span className="insights-kpi-value">
+                  {(insightsDataByRange[activeInsightsRange] || insightsDataByRange['7 Days']).totalFish.toLocaleString()}
+                </span>
+                <span className="insights-kpi-subtext">Fish Fry</span>
+              </div>
+
+              {/* Counting Sessions Card */}
+              <div className="insights-kpi-card sessions-card">
+                <div className="insights-kpi-icon-badge green-badge">
+                  <CountingSessionsIcon size={22} />
+                </div>
+                <span className="insights-kpi-label">Counting Sessions</span>
+                <span className="insights-kpi-value">
+                  {(insightsDataByRange[activeInsightsRange] || insightsDataByRange['7 Days']).sessions}
+                </span>
+                <span className="insights-kpi-subtext">Sessions done</span>
+              </div>
+            </div>
+
+            {/* Counts by Location Card matching insightsReference.png */}
+            <div className="insights-location-card">
+              <div className="insights-location-header">
+                <MapPin size={18} fill="#2563EB" stroke="#2563EB" className="location-pin-icon" />
+                <h2 className="insights-location-title">Counts by Location</h2>
+              </div>
+
+              <div className="insights-location-list">
+                {(insightsDataByRange[activeInsightsRange] || insightsDataByRange['7 Days']).locations.map((loc) => (
+                  <div key={loc.name} className="insights-location-row">
+                    <span className="insights-location-name">{loc.name}</span>
+                    <div className="insights-progress-track">
+                      <div 
+                        className="insights-progress-fill" 
+                        style={{ 
+                          width: `${loc.percentage}%`,
+                          backgroundColor: loc.color
+                        }} 
+                      />
+                    </div>
+                    <span className="insights-location-count">{loc.count.toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Download PDF Report CTA Button */}
+            <button 
+              type="button" 
+              className="insights-download-btn"
+              onClick={handleDownloadPDFReport}
+              aria-label="Download PDF report of hatchery insights"
+            >
+              <FileDown size={20} className="download-btn-icon" />
+              <span>Download PDF Report</span>
+            </button>
+          </div>
         )}
 
         {/* Profile Tab View */}
@@ -1054,13 +1275,13 @@ export default function HomePage({
 
           <button 
             type="button" 
-            className={`nav-tab-item ${activeTab === 'reports' ? 'active' : ''}`}
-            onClick={() => handleTabChange('reports')}
+            className={`nav-tab-item ${(activeTab === 'insights' || activeTab === 'reports') ? 'active' : ''}`}
+            onClick={() => handleTabChange('insights')}
           >
             <div className="nav-icon-container">
               <BarChart2 size={22} className="nav-svg-icon" />
             </div>
-            <span className="nav-tab-label">Reports</span>
+            <span className="nav-tab-label">Insights</span>
           </button>
 
           <button 

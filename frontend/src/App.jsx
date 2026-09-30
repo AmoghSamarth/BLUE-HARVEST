@@ -37,8 +37,8 @@ function parseRouteFromLocation() {
   if (rawPath === '/history') {
     return { screen: 'home', tab: 'history', countTrigger: false };
   }
-  if (rawPath === '/reports') {
-    return { screen: 'home', tab: 'reports', countTrigger: false };
+  if (rawPath === '/reports' || rawPath === '/insights') {
+    return { screen: 'home', tab: 'insights', countTrigger: false };
   }
   if (rawPath === '/profile') {
     return { screen: 'home', tab: 'profile', countTrigger: false };
