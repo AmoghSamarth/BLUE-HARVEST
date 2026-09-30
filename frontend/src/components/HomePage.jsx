@@ -100,7 +100,6 @@ export default function HomePage({
   const [scanError, setScanError] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef(null);
-  const cameraInputRef = useRef(null);
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
 
@@ -576,19 +575,11 @@ export default function HomePage({
 
   return (
     <div className={`home-screen-wrapper tab-${activeTab}`}>
-      {/* Hidden File / Camera Inputs */}
+      {/* Hidden File Input */}
       <input 
         type="file" 
         ref={fileInputRef} 
         accept="image/*" 
-        style={{ display: 'none' }}
-        onChange={handleImageSelected} 
-      />
-      <input 
-        type="file" 
-        ref={cameraInputRef} 
-        accept="image/*" 
-        capture="environment"
         style={{ display: 'none' }}
         onChange={handleImageSelected} 
       />
@@ -689,7 +680,6 @@ export default function HomePage({
               <div 
                 className="action-card upload-card"
                 onClick={() => {
-                  onCountRequested?.();
                   fileInputRef.current && fileInputRef.current.click();
                 }}
                 role="button"
@@ -711,7 +701,6 @@ export default function HomePage({
               <div 
                 className="action-card camera-card"
                 onClick={() => {
-                  onCountRequested?.();
                   setShowLiveCamera(true);
                 }}
                 role="button"
@@ -1496,13 +1485,9 @@ export default function HomePage({
                     <button 
                       type="button" 
                       className="action-btn camera-fallback-file-btn"
-                      onClick={() => {
-                        stopCamera();
-                        cameraInputRef.current?.click();
-                      }}
+                      onClick={stopCamera}
                     >
-                      <ImageIcon size={15} />
-                      <span>Select Photo from Files</span>
+                      <span>Close Camera</span>
                     </button>
                   </div>
                 </div>
@@ -1562,18 +1547,7 @@ export default function HomePage({
                   <div className="shutter-inner-ring" />
                 </button>
 
-                <button 
-                  type="button" 
-                  className="camera-tool-btn"
-                  onClick={() => {
-                    stopCamera();
-                    cameraInputRef.current?.click();
-                  }}
-                  title="Choose Photo from Files"
-                  aria-label="Upload photo from files instead"
-                >
-                  <ImageIcon size={22} />
-                </button>
+                <div className="camera-tool-spacer" style={{ width: 48, height: 48 }} aria-hidden="true" />
               </div>
             )}
           </div>
