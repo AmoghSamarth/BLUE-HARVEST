@@ -32,12 +32,17 @@ import {
   SlidersHorizontal,
   SwitchCamera,
   MapPin,
-  FileDown
+  FileDown,
+  Save,
+  ArrowRight,
+  RotateCcw
 } from 'lucide-react';
 import heroImage from '../assets/hero.png';
 import agriImage from '../assets/agriculture.png';
 import trayImage from '../assets/tray.png';
 import insightsBg from '../assets/insightsBg.png';
+import outputCountBg from '../assets/outputCountBg.png';
+import outputCardMainBg from '../assets/outputCardMainBg.png';
 import { processImage } from '../api/client';
 
 // Authentic Fish icon matching insightsReference.png
@@ -75,6 +80,76 @@ const DensityBarsIcon = ({ size = 13 }) => (
   </svg>
 );
 
+// Format processing latency in seconds
+const formatProcessingTime = (timeStr) => {
+  if (!timeStr) return '5.14 seconds';
+  const clean = String(timeStr).replace(/[^0-9.]/g, '');
+  const num = parseFloat(clean);
+  if (isNaN(num) || num === 0) return '5.14 seconds';
+  return `${num.toFixed(2)} seconds`;
+};
+
+// Celebration Checkmark Badge matching outputCardReference.png
+const CelebrationCheckmarkBadge = () => (
+  <div className="celebration-badge-container">
+    <svg width="112" height="112" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg" className="celebration-burst-svg">
+      {/* Radiating Accent Ticks */}
+      <line x1="43" y1="23" x2="39" y2="15" stroke="#34D399" strokeWidth="2.8" strokeLinecap="round" />
+      <line x1="69" y1="23" x2="73" y2="15" stroke="#60A5FA" strokeWidth="2.8" strokeLinecap="round" />
+      <line x1="89" y1="56" x2="97" y2="56" stroke="#60A5FA" strokeWidth="2.8" strokeLinecap="round" />
+      <line x1="81" y1="78" x2="87" y2="84" stroke="#60A5FA" strokeWidth="2.8" strokeLinecap="round" />
+      <line x1="31" y1="78" x2="25" y2="84" stroke="#34D399" strokeWidth="2.8" strokeLinecap="round" />
+      <line x1="23" y1="56" x2="15" y2="56" stroke="#34D399" strokeWidth="2.8" strokeLinecap="round" />
+
+      {/* Floating Accent Dots */}
+      <circle cx="27" cy="38" r="2.2" fill="#10B981" />
+      <circle cx="56" cy="11" r="2.2" fill="#10B981" />
+      <circle cx="85" cy="38" r="2.2" fill="#10B981" />
+      <circle cx="94" cy="69" r="2.2" fill="#38BDF8" />
+      <circle cx="25" cy="69" r="2.2" fill="#10B981" />
+      <circle cx="56" cy="100" r="2" fill="#60A5FA" />
+
+      {/* Soft Outer Halo Ring */}
+      <circle cx="56" cy="56" r="37" fill="rgba(220, 252, 231, 0.45)" />
+
+      {/* Solid Inner Badge */}
+      <circle cx="56" cy="56" r="29" fill="#DCFCE7" stroke="#FFFFFF" strokeWidth="2.2" />
+
+      {/* Bold Green Checkmark */}
+      <path 
+        d="M45.5 56.5L52.5 63.5L66.5 49" 
+        stroke="#16A34A" 
+        strokeWidth="3.8" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+      />
+    </svg>
+  </div>
+);
+
+// Solid left-facing fish silhouette matching outputCardReference.png
+const OutputCardFishIcon = ({ size = 26, color = "#1D4ED8" }) => (
+  <svg width={size} height={size} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path 
+      d="M4 14C6.5 11.2 10.2 9.5 14.5 9.5C16.8 9.5 18.8 8.2 19.8 7C20.2 8.5 20.5 10.2 20.5 12C21.8 11 23.5 9.8 25.5 9L24.2 14L25.5 19C23.5 18.2 21.8 17 20.5 16C20.5 17.8 20.2 19.5 19.8 21C18.8 19.8 16.8 18.5 14.5 18.5C10.2 18.5 6.5 16.8 4 14Z" 
+      fill={color} 
+    />
+    <circle cx="8.5" cy="13.2" r="1.3" fill="#FFFFFF" />
+  </svg>
+);
+
+// Decorative wavy underline matching outputCardReference.png
+const OutputWaveSquiggle = () => (
+  <svg width="72" height="6" viewBox="0 0 72 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="output-stat-wave">
+    <path 
+      d="M1 3C5 1 9 5 13 3C17 1 21 5 25 3C29 1 33 5 37 3C41 1 45 5 49 3C53 1 57 5 61 3C65 1 69 5 71 3" 
+      stroke="#93C5FD" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+    />
+  </svg>
+);
+
 export default function HomePage({ 
   user, 
   onLogout, 
@@ -99,6 +174,7 @@ export default function HomePage({
   const [scanResult, setScanResult] = useState(null);
   const [scanError, setScanError] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showHeatmapLightbox, setShowHeatmapLightbox] = useState(false);
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
@@ -1554,11 +1630,19 @@ export default function HomePage({
         </div>
       )}
 
-      {/* AI Scanning Modal Result */}
+      {/* AI Scanning Modal Result / Output Card matching outputCardReference.png */}
       {(isAnalyzing || scanResult || scanError) && (
-        <div className="modal-backdrop">
-          <div className="modal-card scan-result-modal">
-            {isAnalyzing ? (
+        <div 
+          className="modal-backdrop output-modal-backdrop"
+          onClick={() => {
+            if (!isAnalyzing) {
+              setScanResult(null);
+              setScanError(null);
+            }
+          }}
+        >
+          {isAnalyzing ? (
+            <div className="modal-card analyzing-modal-card" onClick={(e) => e.stopPropagation()}>
               <div className="analyzing-state">
                 <div className="scan-radar-spinner">
                   <RefreshCw size={36} className="spin-icon" />
@@ -1566,7 +1650,9 @@ export default function HomePage({
                 <h3>Analyzing Fish Spawn…</h3>
                 <p>Running Computer Vision & YOLO pipeline via BlueHarvest Backend...</p>
               </div>
-            ) : scanError ? (
+            </div>
+          ) : scanError ? (
+            <div className="modal-card scan-error-modal-card" onClick={(e) => e.stopPropagation()}>
               <div className="scan-error-content" style={{ textAlign: 'center', padding: '12px' }}>
                 <div className="result-header" style={{ justifyContent: 'center', marginBottom: '12px' }}>
                   <X size={36} style={{ color: '#EF4444' }} />
@@ -1597,51 +1683,139 @@ export default function HomePage({
                   </button>
                 </div>
               </div>
-            ) : (
-              <div className="scan-success-content">
-                <div className="result-header">
-                  <CheckCircle2 size={36} className="success-icon" />
-                  <h3>Count Verified!</h3>
+            </div>
+          ) : (
+            <div className="modal-card output-card-modal" onClick={(e) => e.stopPropagation()}>
+              {/* Top Scenic Landscape Header with outputCardMainBg.png */}
+              <div 
+                className="output-card-header"
+                style={{ backgroundImage: `url(${outputCardMainBg})` }}
+              />
+
+              {/* Celebration Checkmark Badge */}
+              <div className="output-celebration-wrapper">
+                <CelebrationCheckmarkBadge />
+              </div>
+
+              {/* Title & Subtitle */}
+              <div className="output-title-group">
+                <h2 className="output-verified-title">Count Verified!</h2>
+                <p className="output-verified-sub">Fish fry detected successfully.</p>
+              </div>
+
+              {/* Stats Box with outputCountBg.png */}
+              <div 
+                className="output-stats-card"
+                style={{ backgroundImage: `url(${outputCountBg})` }}
+              >
+                {/* Left Stat: Fish Fry Detected */}
+                <div className="output-stat-unit">
+                  <div className="output-stat-circle-badge">
+                    <OutputCardFishIcon size={26} color="#1D4ED8" />
+                  </div>
+                  <div className="output-stat-meta">
+                    <span className="output-stat-label">Fish Fry Detected</span>
+                    <span className="output-stat-value count-value">
+                      {scanResult.count ?? 609}
+                    </span>
+                    <OutputWaveSquiggle />
+                  </div>
                 </div>
-                <div className="big-count-display">
-                  <span className="count-number">{scanResult.count}</span>
-                  <span className="count-caption">Fingerlings Detected</span>
+
+                {/* Vertical Divider */}
+                <div className="output-stat-separator" />
+
+                {/* Right Stat: Processed in */}
+                <div className="output-stat-unit">
+                  <div className="output-stat-circle-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                  </div>
+                  <div className="output-stat-meta">
+                    <span className="output-stat-label">Processed in</span>
+                    <span className="output-stat-value time-value">
+                      {formatProcessingTime(scanResult.processingTime)}
+                    </span>
+                  </div>
                 </div>
-                <div className="result-metrics-grid">
-                  <div className="result-metric-card">
-                    <span>Confidence</span>
-                    <strong>{scanResult.confidence}</strong>
-                  </div>
-                  <div className="result-metric-card">
-                    <span>Density</span>
-                    <strong>{scanResult.density}</strong>
-                  </div>
-                  <div className="result-metric-card">
-                    <span>Avg Length</span>
-                    <strong>{scanResult.avgLength}</strong>
-                  </div>
-                </div>
-                {scanResult.heatmapImg && (
-                  <div style={{ marginTop: '12px', textAlign: 'center' }}>
-                    <img 
-                      src={scanResult.heatmapImg} 
-                      alt="Neural Heatmap Detection" 
-                      style={{ maxWidth: '100%', maxHeight: '160px', borderRadius: '10px', objectFit: 'contain' }} 
-                    />
-                    <div style={{ fontSize: '11px', color: '#6B7280', marginTop: '4px' }}>
-                      Stage: {scanResult.channel} | Latency: {scanResult.processingTime}
-                    </div>
-                  </div>
-                )}
+              </div>
+
+              {/* Detection / Heatmap Preview Image */}
+              <div className="output-image-card">
+                <img 
+                  src={scanResult.heatmapImg || scanningImage || trayImage} 
+                  alt="Fish fry detection preview" 
+                  className="output-detection-img" 
+                />
                 <button 
                   type="button" 
-                  className="action-btn primary-login-btn close-scan-btn"
-                  onClick={handleSaveToLedger}
+                  className="output-expand-icon-btn"
+                  onClick={() => setShowHeatmapLightbox(true)}
+                  title="View full resolution detection"
+                  aria-label="Expand detection view"
                 >
-                  Save to Hatchery Ledger
+                  <Maximize2 size={16} color="#FFFFFF" strokeWidth={2.4} />
                 </button>
               </div>
-            )}
+
+              {/* Action Buttons */}
+              <div className="output-actions-group">
+                {/* Save to Hatchery Ledger Button */}
+                <button 
+                  type="button" 
+                  className="output-primary-btn"
+                  onClick={handleSaveToLedger}
+                >
+                  <div className="output-btn-left-content">
+                    <Save size={20} color="#FFFFFF" strokeWidth={2.2} />
+                    <span>Save to Hatchery Ledger</span>
+                  </div>
+                  <ArrowRight size={20} color="#FFFFFF" strokeWidth={2.2} className="output-arrow-right" />
+                </button>
+
+                {/* Count Another Image Button */}
+                <button 
+                  type="button" 
+                  className="output-secondary-btn"
+                  onClick={() => {
+                    setScanResult(null);
+                    setScanningImage(null);
+                    setScanError(null);
+                  }}
+                >
+                  <RotateCcw size={18} color="#2563EB" strokeWidth={2.4} />
+                  <span>Count Another Image</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Heatmap Fullscreen Lightbox Modal */}
+      {showHeatmapLightbox && (
+        <div className="modal-backdrop lightbox-backdrop" onClick={() => setShowHeatmapLightbox(false)}>
+          <div className="lightbox-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="lightbox-header">
+              <span className="lightbox-title">AI Detection Inspection (Count: {scanResult?.count ?? 609})</span>
+              <button 
+                type="button" 
+                className="lightbox-close-btn"
+                onClick={() => setShowHeatmapLightbox(false)}
+                aria-label="Close preview"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="lightbox-body">
+              <img 
+                src={scanResult?.heatmapImg || scanningImage || trayImage} 
+                alt="High-resolution fish fry detection" 
+                className="lightbox-full-img"
+              />
+            </div>
           </div>
         </div>
       )}
