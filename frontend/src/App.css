@@ -1505,7 +1505,6 @@ body::-webkit-scrollbar,
   padding: 28px 24px;
 }
 
-.analyzing-modal-card,
 .scan-error-modal-card {
   max-width: 380px;
   padding: 28px 24px;
@@ -1513,22 +1512,82 @@ body::-webkit-scrollbar,
   background: #FFFFFF;
 }
 
-.analyzing-state {
+/* ==========================================================================
+   Dual Fish Loading Animation matching loadingScreenReference.png
+   ========================================================================== */
+.dual-fish-loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  text-align: center;
+  justify-content: center;
+  width: 100%;
 }
 
-.scan-radar-spinner {
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  background: #EEF4FD;
-  color: var(--blue);
-  display: grid;
-  place-items: center;
+.dual-fish-loading-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: #FFFFFF;
+  border-radius: 28px;
+  padding: 56px 24px 44px;
+  box-shadow: 0 25px 60px -15px rgba(11, 42, 122, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: modalPopUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dual-fish-spinner-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: dualFishClockwise 2.4s linear infinite;
+  transform-origin: center center;
+  flex-shrink: 0;
+}
+
+@keyframes dualFishClockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dual-fish-loading-text {
+  margin-top: 26px;
+  font-size: 17.5px;
+  font-weight: 500;
+  color: #334155;
+  letter-spacing: 0.28em;
+  padding-left: 0.28em; /* optically centers letter-spacing */
+  text-transform: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  user-select: none;
+}
+
+.dual-fish-loading-subtitle {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748B;
+  letter-spacing: normal;
+  max-width: 260px;
+  line-height: 1.4;
+}
+
+/* Fullscreen Overlay mode */
+.dual-fish-fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 /* ==========================================================================
@@ -1777,7 +1836,6 @@ body::-webkit-scrollbar,
 }
 
 .output-primary-btn {
-  position: relative;
   width: 100%;
   height: 52px;
   border-radius: 14px;
@@ -1790,7 +1848,7 @@ body::-webkit-scrollbar,
   box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 0 20px;
   transition: all 0.18s ease;
 }
@@ -1798,12 +1856,13 @@ body::-webkit-scrollbar,
 .output-btn-left-content {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .output-arrow-right {
-  position: absolute;
-  right: 18px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .output-primary-btn:hover {
@@ -3531,12 +3590,17 @@ body::-webkit-scrollbar,
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   background: rgba(11, 21, 40, 0.92);
   color: #E2E8F0;
-  font-size: 13.5px;
-  font-weight: 600;
   z-index: 5;
+}
+
+.camera-loading-text {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #E2E8F0;
+  letter-spacing: 0.04em;
 }
 
 /* AI Vision Reticle HUD */

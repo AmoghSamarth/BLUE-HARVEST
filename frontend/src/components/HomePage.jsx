@@ -43,6 +43,7 @@ import trayImage from '../assets/tray.png';
 import insightsBg from '../assets/insightsBg.png';
 import outputCountBg from '../assets/outputCountBg.png';
 import outputCardMainBg from '../assets/outputCardMainBg.png';
+import DualFishLoader, { DualFishSpinner } from './DualFishLoader';
 import { processImage } from '../api/client';
 
 // Authentic Fish icon matching insightsReference.png
@@ -1578,8 +1579,8 @@ export default function HomePage({
 
                   {isCameraStarting && (
                     <div className="camera-loading-overlay">
-                      <RefreshCw size={28} className="spin-icon" />
-                      <span>Initializing Live Video Feed...</span>
+                      <DualFishSpinner size={48} />
+                      <span className="camera-loading-text">Initializing Live Video Feed...</span>
                     </div>
                   )}
 
@@ -1642,14 +1643,12 @@ export default function HomePage({
           }}
         >
           {isAnalyzing ? (
-            <div className="modal-card analyzing-modal-card" onClick={(e) => e.stopPropagation()}>
-              <div className="analyzing-state">
-                <div className="scan-radar-spinner">
-                  <RefreshCw size={36} className="spin-icon" />
-                </div>
-                <h3>Analyzing Fish Spawn…</h3>
-                <p>Running Computer Vision & YOLO pipeline via BlueHarvest Backend...</p>
-              </div>
+            <div className="modal-card dual-fish-loading-card" onClick={(e) => e.stopPropagation()}>
+              <DualFishLoader 
+                text="Loading..." 
+                subtitle="Running Computer Vision & YOLO pipeline..." 
+                size={140}
+              />
             </div>
           ) : scanError ? (
             <div className="modal-card scan-error-modal-card" onClick={(e) => e.stopPropagation()}>
