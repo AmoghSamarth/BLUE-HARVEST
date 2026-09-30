@@ -30,7 +30,6 @@ export const DualFishSpinner = ({ size = 140, className = '' }) => (
 
 export default function DualFishLoader({ 
   text = 'Loading...', 
-  subtitle = null, 
   size = 140,
   fullScreen = false,
   className = ''
@@ -39,7 +38,6 @@ export default function DualFishLoader({
     <div className={`dual-fish-loading-container ${className}`}>
       <DualFishSpinner size={size} />
       {text && <div className="dual-fish-loading-text">{text}</div>}
-      {subtitle && <div className="dual-fish-loading-subtitle">{subtitle}</div>}
     </div>
   );
 

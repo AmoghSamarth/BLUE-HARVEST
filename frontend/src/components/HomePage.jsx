@@ -1646,7 +1646,6 @@ export default function HomePage({
             <div className="modal-card dual-fish-loading-card" onClick={(e) => e.stopPropagation()}>
               <DualFishLoader 
                 text="Loading..." 
-                subtitle="Running Computer Vision & YOLO pipeline..." 
                 size={140}
               />
             </div>
